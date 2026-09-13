@@ -423,17 +423,29 @@ gp2 = GaussianProcessRegressor(kernel=kernel2, alpha=1e-6, n_restarts_optimizer=
 gp2.fit(func2_inputs, func2_outputs)
 print("✅ func2 fitted (2D, RBF length_scale=0.2)")
 
+# Function 2: Random Forest surrogate (comparison model)
+rf2 = fit_random_forest_surrogate(func2_inputs, func2_outputs)
+print("✅ func2 fitted (Random Forest, 200 trees)")
+
 # Function 3: 3D - Matern kernel (better for higher dimensions)
 kernel3 = ConstantKernel(1.0) * Matern(length_scale=0.1, nu=2.5)
 gp3 = GaussianProcessRegressor(kernel=kernel3, alpha=1e-6, n_restarts_optimizer=10)
 gp3.fit(func3_inputs, func3_outputs)
 print("✅ func3 fitted (3D, Matern nu=2.5)")
 
+# Function 3: Random Forest surrogate (comparison model)
+rf3 = fit_random_forest_surrogate(func3_inputs, func3_outputs)
+print("✅ func3 fitted (Random Forest, 200 trees)")
+
 # Function 4: 4D - Matern kernel
 kernel4 = ConstantKernel(1.0) * Matern(length_scale=0.1, nu=2.5)
 gp4 = GaussianProcessRegressor(kernel=kernel4, alpha=1e-6, n_restarts_optimizer=10)
 gp4.fit(func4_inputs, func4_outputs)
 print("✅ func4 fitted (4D, Matern nu=2.5)")
+
+# Function 4: Random Forest surrogate (comparison model)
+rf4 = fit_random_forest_surrogate(func4_inputs, func4_outputs)
+print("✅ func4 fitted (Random Forest, 200 trees)")
 
 # Function 5: 4D - Different kernel (maybe longer length_scale)
 kernel5 = ConstantKernel(1.0) * Matern(length_scale=0.2, nu=1.5)  # More flexible
@@ -450,6 +462,10 @@ kernel6 = ConstantKernel(1.0) * Matern(length_scale=0.1, nu=1.5)
 gp6 = GaussianProcessRegressor(kernel=kernel6, alpha=1e-6, n_restarts_optimizer=10)
 gp6.fit(func6_inputs, func6_outputs)
 print("✅ func6 fitted (5D, Matern nu=1.5)")
+
+# Function 6: Random Forest surrogate (comparison model)
+rf6 = fit_random_forest_surrogate(func6_inputs, func6_outputs)
+print("✅ func6 fitted (Random Forest, 200 trees)")
 
 # Function 7: 6D - Matern with nu=1.5
 kernel7 = ConstantKernel(1.0) * Matern(length_scale=0.15, nu=1.5)
@@ -521,6 +537,16 @@ best_candidate_f2 = candidates_f2[best_idx_f2]
 print(f"  Best predicted point: {best_candidate_f2}")
 print(f"  Best predicted mean: {mean_f2[best_idx_f2]:.4f}")
 
+# Random Forest predictions (comparison model)
+mean_f2_rf, std_f2_rf = random_forest_predict(rf2, candidates_f2)
+best_idx_f2_rf = np.argmax(mean_f2_rf)
+best_candidate_f2_rf = candidates_f2[best_idx_f2_rf]
+print(f"Predictions for Function 2 (Random Forest):")
+print(f"  Mean range: [{mean_f2_rf.min():.4f}, {mean_f2_rf.max():.4f}]")
+print(f"  Std range: [{std_f2_rf.min():.4f}, {std_f2_rf.max():.4f}]")
+print(f"  Best predicted point: {best_candidate_f2_rf}")
+print(f"  Best predicted mean: {mean_f2_rf[best_idx_f2_rf]:.4f}")
+
 # =============================================================================
 # FUNCTION 3: PREDICTIONS (3D)
 # =============================================================================
@@ -539,6 +565,16 @@ best_candidate_f3 = candidates_f3[best_idx_f3]
 print(f"  Best predicted point: {best_candidate_f3}")
 print(f"  Best predicted mean: {mean_f3[best_idx_f3]:.4f}")
 
+# Random Forest predictions (comparison model)
+mean_f3_rf, std_f3_rf = random_forest_predict(rf3, candidates_f3)
+best_idx_f3_rf = np.argmax(mean_f3_rf)
+best_candidate_f3_rf = candidates_f3[best_idx_f3_rf]
+print(f"Predictions for Function 3 (Random Forest):")
+print(f"  Mean range: [{mean_f3_rf.min():.4f}, {mean_f3_rf.max():.4f}]")
+print(f"  Std range: [{std_f3_rf.min():.4f}, {std_f3_rf.max():.4f}]")
+print(f"  Best predicted point: {best_candidate_f3_rf}")
+print(f"  Best predicted mean: {mean_f3_rf[best_idx_f3_rf]:.4f}")
+
 # =============================================================================
 # FUNCTION 4: PREDICTIONS (4D)
 # =============================================================================
@@ -556,6 +592,16 @@ best_idx_f4 = np.argmax(mean_f4)
 best_candidate_f4 = candidates_f4[best_idx_f4]
 print(f"  Best predicted point: {best_candidate_f4}")
 print(f"  Best predicted mean: {mean_f4[best_idx_f4]:.4f}")
+
+# Random Forest predictions (comparison model)
+mean_f4_rf, std_f4_rf = random_forest_predict(rf4, candidates_f4)
+best_idx_f4_rf = np.argmax(mean_f4_rf)
+best_candidate_f4_rf = candidates_f4[best_idx_f4_rf]
+print(f"Predictions for Function 4 (Random Forest):")
+print(f"  Mean range: [{mean_f4_rf.min():.4f}, {mean_f4_rf.max():.4f}]")
+print(f"  Std range: [{std_f4_rf.min():.4f}, {std_f4_rf.max():.4f}]")
+print(f"  Best predicted point: {best_candidate_f4_rf}")
+print(f"  Best predicted mean: {mean_f4_rf[best_idx_f4_rf]:.4f}")
 
 # =============================================================================
 # FUNCTION 5: PREDICTIONS (4D)
@@ -604,6 +650,16 @@ best_idx_f6 = np.argmax(mean_f6)
 best_candidate_f6 = candidates_f6[best_idx_f6]
 print(f"  Best predicted point: {best_candidate_f6}")
 print(f"  Best predicted mean: {mean_f6[best_idx_f6]:.4f}")
+
+# Random Forest predictions (comparison model)
+mean_f6_rf, std_f6_rf = random_forest_predict(rf6, candidates_f6)
+best_idx_f6_rf = np.argmax(mean_f6_rf)
+best_candidate_f6_rf = candidates_f6[best_idx_f6_rf]
+print(f"Predictions for Function 6 (Random Forest):")
+print(f"  Mean range: [{mean_f6_rf.min():.4f}, {mean_f6_rf.max():.4f}]")
+print(f"  Std range: [{std_f6_rf.min():.4f}, {std_f6_rf.max():.4f}]")
+print(f"  Best predicted point: {best_candidate_f6_rf}")
+print(f"  Best predicted mean: {mean_f6_rf[best_idx_f6_rf]:.4f}")
 
 # =============================================================================
 # FUNCTION 7: PREDICTIONS (6D)
@@ -840,6 +896,27 @@ print(f"  EI value: {ei_2[best_ei_idx_2]:.4f}")
 print(f"  Mean: {mean_f2[best_ei_idx_2]:.4f}")
 print(f"  Std: {std_f2[best_ei_idx_2]:.4f}")
 
+# Random Forest acquisition (comparison model)
+ucb_2_rf = upper_confidence_bound(mean_f2_rf, std_f2_rf, kappa=2.0)
+best_ucb_idx_2_rf = np.argmax(np.where(valid_2, ucb_2_rf, -np.inf))
+next_point_ucb_2_rf = candidates_f2[best_ucb_idx_2_rf]
+
+ei_2_rf = expected_improvement(mean_f2_rf, std_f2_rf, y_best_2, xi=0.1)
+best_ei_idx_2_rf = np.argmax(np.where(valid_2, ei_2_rf, -np.inf))
+next_point_ei_2_rf = candidates_f2[best_ei_idx_2_rf]
+
+print(f"\n[Random Forest] UCB (κ=2.0):")
+print(f"  Next point: {next_point_ucb_2_rf[0]:.6f}-{next_point_ucb_2_rf[1]:.6f}")
+print(f"  UCB value: {ucb_2_rf[best_ucb_idx_2_rf]:.4f}")
+print(f"  Mean: {mean_f2_rf[best_ucb_idx_2_rf]:.4f}")
+print(f"  Std: {std_f2_rf[best_ucb_idx_2_rf]:.4f}")
+
+print(f"\n[Random Forest] EI (y_best={y_best_2:.4f}):")
+print(f"  Next point: {next_point_ei_2_rf[0]:.6f}-{next_point_ei_2_rf[1]:.6f}")
+print(f"  EI value: {ei_2_rf[best_ei_idx_2_rf]:.4f}")
+print(f"  Mean: {mean_f2_rf[best_ei_idx_2_rf]:.4f}")
+print(f"  Std: {std_f2_rf[best_ei_idx_2_rf]:.4f}")
+
 # =============================================================================
 # FUNCTION 3: ACQUISITION (3D)
 # =============================================================================
@@ -874,6 +951,27 @@ print(f"  EI value: {ei_3[best_ei_idx_3]:.4f}")
 print(f"  Mean: {mean_f3[best_ei_idx_3]:.4f}")
 print(f"  Std: {std_f3[best_ei_idx_3]:.4f}")
 
+# Random Forest acquisition (comparison model)
+ucb_3_rf = upper_confidence_bound(mean_f3_rf, std_f3_rf, kappa=1.5)
+best_ucb_idx_3_rf = np.argmax(np.where(valid_3, ucb_3_rf, -np.inf))
+next_point_ucb_3_rf = candidates_f3[best_ucb_idx_3_rf]
+
+ei_3_rf = expected_improvement(mean_f3_rf, std_f3_rf, y_best_3, xi=0.01)
+best_ei_idx_3_rf = np.argmax(np.where(valid_3, ei_3_rf, -np.inf))
+next_point_ei_3_rf = candidates_f3[best_ei_idx_3_rf]
+
+print(f"\n[Random Forest] UCB (κ=1.5):")
+print(f"  Next point: {next_point_ucb_3_rf[0]:.6f}-{next_point_ucb_3_rf[1]:.6f}-{next_point_ucb_3_rf[2]:.6f}")
+print(f"  UCB value: {ucb_3_rf[best_ucb_idx_3_rf]:.4f}")
+print(f"  Mean: {mean_f3_rf[best_ucb_idx_3_rf]:.4f}")
+print(f"  Std: {std_f3_rf[best_ucb_idx_3_rf]:.4f}")
+
+print(f"\n[Random Forest] EI (y_best={y_best_3:.4f}):")
+print(f"  Next point: {next_point_ei_3_rf[0]:.6f}-{next_point_ei_3_rf[1]:.6f}-{next_point_ei_3_rf[2]:.6f}")
+print(f"  EI value: {ei_3_rf[best_ei_idx_3_rf]:.4f}")
+print(f"  Mean: {mean_f3_rf[best_ei_idx_3_rf]:.4f}")
+print(f"  Std: {std_f3_rf[best_ei_idx_3_rf]:.4f}")
+
 # =============================================================================
 # FUNCTION 4: ACQUISITION (4D)
 # =============================================================================
@@ -907,6 +1005,27 @@ print(f"  Next point: {next_point_ei_4[0]:.6f}-{next_point_ei_4[1]:.6f}-{next_po
 print(f"  EI value: {ei_4[best_ei_idx_4]:.4f}")
 print(f"  Mean: {mean_f4[best_ei_idx_4]:.4f}")
 print(f"  Std: {std_f4[best_ei_idx_4]:.4f}")
+
+# Random Forest acquisition (comparison model)
+ucb_4_rf = upper_confidence_bound(mean_f4_rf, std_f4_rf, kappa=1.5)
+best_ucb_idx_4_rf = np.argmax(np.where(valid_4, ucb_4_rf, -np.inf))
+next_point_ucb_4_rf = candidates_f4[best_ucb_idx_4_rf]
+
+ei_4_rf = expected_improvement(mean_f4_rf, std_f4_rf, y_best_4, xi=0.01)
+best_ei_idx_4_rf = np.argmax(np.where(valid_4, ei_4_rf, -np.inf))
+next_point_ei_4_rf = candidates_f4[best_ei_idx_4_rf]
+
+print(f"\n[Random Forest] UCB (κ=1.5):")
+print(f"  Next point: {next_point_ucb_4_rf[0]:.6f}-{next_point_ucb_4_rf[1]:.6f}-{next_point_ucb_4_rf[2]:.6f}-{next_point_ucb_4_rf[3]:.6f}")
+print(f"  UCB value: {ucb_4_rf[best_ucb_idx_4_rf]:.4f}")
+print(f"  Mean: {mean_f4_rf[best_ucb_idx_4_rf]:.4f}")
+print(f"  Std: {std_f4_rf[best_ucb_idx_4_rf]:.4f}")
+
+print(f"\n[Random Forest] EI (y_best={y_best_4:.4f}):")
+print(f"  Next point: {next_point_ei_4_rf[0]:.6f}-{next_point_ei_4_rf[1]:.6f}-{next_point_ei_4_rf[2]:.6f}-{next_point_ei_4_rf[3]:.6f}")
+print(f"  EI value: {ei_4_rf[best_ei_idx_4_rf]:.4f}")
+print(f"  Mean: {mean_f4_rf[best_ei_idx_4_rf]:.4f}")
+print(f"  Std: {std_f4_rf[best_ei_idx_4_rf]:.4f}")
 
 # =============================================================================
 # FUNCTION 5: ACQUISITION (4D)
@@ -996,6 +1115,27 @@ print(f"  Next point: {next_point_ei_6[0]:.6f}-{next_point_ei_6[1]:.6f}-{next_po
 print(f"  EI value: {ei_6[best_ei_idx_6]:.4f}")
 print(f"  Mean: {mean_f6[best_ei_idx_6]:.4f}")
 print(f"  Std: {std_f6[best_ei_idx_6]:.4f}")
+
+# Random Forest acquisition (comparison model)
+ucb_6_rf = upper_confidence_bound(mean_f6_rf, std_f6_rf, kappa=2.5)
+best_ucb_idx_6_rf = np.argmax(np.where(valid_6, ucb_6_rf, -np.inf))
+next_point_ucb_6_rf = candidates_f6[best_ucb_idx_6_rf]
+
+ei_6_rf = expected_improvement(mean_f6_rf, std_f6_rf, y_best_6, xi=0.01)
+best_ei_idx_6_rf = np.argmax(np.where(valid_6, ei_6_rf, -np.inf))
+next_point_ei_6_rf = candidates_f6[best_ei_idx_6_rf]
+
+print(f"\n[Random Forest] UCB (κ=2.5):")
+print(f"  Next point: {next_point_ucb_6_rf[0]:.6f}-{next_point_ucb_6_rf[1]:.6f}-{next_point_ucb_6_rf[2]:.6f}-{next_point_ucb_6_rf[3]:.6f}-{next_point_ucb_6_rf[4]:.6f}")
+print(f"  UCB value: {ucb_6_rf[best_ucb_idx_6_rf]:.4f}")
+print(f"  Mean: {mean_f6_rf[best_ucb_idx_6_rf]:.4f}")
+print(f"  Std: {std_f6_rf[best_ucb_idx_6_rf]:.4f}")
+
+print(f"\n[Random Forest] EI (y_best={y_best_6:.4f}):")
+print(f"  Next point: {next_point_ei_6_rf[0]:.6f}-{next_point_ei_6_rf[1]:.6f}-{next_point_ei_6_rf[2]:.6f}-{next_point_ei_6_rf[3]:.6f}-{next_point_ei_6_rf[4]:.6f}")
+print(f"  EI value: {ei_6_rf[best_ei_idx_6_rf]:.4f}")
+print(f"  Mean: {mean_f6_rf[best_ei_idx_6_rf]:.4f}")
+print(f"  Std: {std_f6_rf[best_ei_idx_6_rf]:.4f}")
 
 # =============================================================================
 # FUNCTION 7: ACQUISITION (6D)
