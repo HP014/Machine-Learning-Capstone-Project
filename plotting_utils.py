@@ -276,3 +276,20 @@ def expected_improvement(mu, sigma, y_best, xi=0.01):
         ei = improvement * norm.cdf(Z) + sigma * norm.pdf(Z)
         ei[sigma == 0.0] = 0.0
     return ei
+
+
+def unsampled_mask(candidates, existing_points, min_dist=1e-3):
+    """
+    Boolean mask marking which candidates are NOT within min_dist of any
+    already-sampled point. Use this to exclude near-duplicate points before
+    picking the next query with argmax, so the acquisition function can't
+    recommend re-sampling a point you've already queried.
+
+    Parameters:
+    -----------
+    candidates : array-like, shape (n_candidates, n_dims)
+    existing_points : array-like, shape (n_samples, n_dims), already-sampled inputs
+    min_dist : float, minimum Euclidean distance to count as a new point
+    """
+    dists = np.linalg.norm(candidates[:, None, :] - existing_points[None, :, :], axis=2)
+    return dists.min(axis=1) >= min_dist

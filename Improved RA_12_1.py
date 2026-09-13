@@ -12,8 +12,11 @@ warnings.filterwarnings('ignore')
 from plotting_utils import (
     expected_improvement, plot_gp_1d, plot_acquisition_1d, plot_bo_iteration_1d,
     plot_2d_function, plot_2d_bo_state, plot_convergence,
-    plot_parallel_coordinates, upper_confidence_bound
+    plot_parallel_coordinates, upper_confidence_bound, unsampled_mask
 )
+
+# Import Random Forest surrogate model
+from surrogate_models import fit_random_forest_surrogate, random_forest_predict
 
 # Set random seed for reproducibility
 np.random.seed(42)
@@ -410,6 +413,10 @@ gp1 = GaussianProcessRegressor(kernel=kernel1, alpha=1e-6, n_restarts_optimizer=
 gp1.fit(func1_inputs, func1_outputs)
 print("✅ func1 fitted (2D, RBF length_scale=0.3)")
 
+# Function 1: Random Forest surrogate (comparison model)
+rf1 = fit_random_forest_surrogate(func1_inputs, func1_outputs)
+print("✅ func1 fitted (Random Forest, 200 trees)")
+
 # Function 2: 2D - RBF kernel (maybe different length_scale)
 kernel2 = ConstantKernel(1.0) * RBF(length_scale=0.2)  # Different length_scale
 gp2 = GaussianProcessRegressor(kernel=kernel2, alpha=1e-6, n_restarts_optimizer=10)
@@ -434,6 +441,10 @@ gp5 = GaussianProcessRegressor(kernel=kernel5, alpha=1e-6, n_restarts_optimizer=
 gp5.fit(func5_inputs, func5_outputs)
 print("✅ func5 fitted (4D, Matern nu=1.5, length_scale=0.2)")
 
+# Function 5: Random Forest surrogate (comparison model)
+rf5 = fit_random_forest_surrogate(func5_inputs, func5_outputs)
+print("✅ func5 fitted (Random Forest, 200 trees)")
+
 # Function 6: 5D - Matern with nu=1.5 (allows more roughness)
 kernel6 = ConstantKernel(1.0) * Matern(length_scale=0.1, nu=1.5)
 gp6 = GaussianProcessRegressor(kernel=kernel6, alpha=1e-6, n_restarts_optimizer=10)
@@ -446,11 +457,19 @@ gp7 = GaussianProcessRegressor(kernel=kernel7, alpha=1e-6, n_restarts_optimizer=
 gp7.fit(func7_inputs, func7_outputs)
 print("✅ func7 fitted (6D, Matern nu=1.5, length_scale=0.15)")
 
+# Function 7: Random Forest surrogate (comparison model)
+rf7 = fit_random_forest_surrogate(func7_inputs, func7_outputs)
+print("✅ func7 fitted (Random Forest, 200 trees)")
+
 # Function 8: 8D - Matern with nu=1.5 (higher exploration)
 kernel8 = ConstantKernel(1.0) * Matern(length_scale=0.2, nu=1.5)
 gp8 = GaussianProcessRegressor(kernel=kernel8, alpha=1e-6, n_restarts_optimizer=10)
 gp8.fit(func8_inputs, func8_outputs)
 print("✅ func8 fitted (8D, Matern nu=1.5, length_scale=0.2)")
+
+# Function 8: Random Forest surrogate (comparison model)
+rf8 = fit_random_forest_surrogate(func8_inputs, func8_outputs)
+print("✅ func8 fitted (Random Forest, 200 trees)")
 
 
 print("="*60)
@@ -473,6 +492,16 @@ best_idx_f1 = np.argmax(mean_f1)
 best_candidate_f1 = candidates_f1[best_idx_f1]
 print(f"  Best predicted point: {best_candidate_f1}")
 print(f"  Best predicted mean: {mean_f1[best_idx_f1]:.4f}")
+
+# Random Forest predictions (comparison model)
+mean_f1_rf, std_f1_rf = random_forest_predict(rf1, candidates_f1)
+best_idx_f1_rf = np.argmax(mean_f1_rf)
+best_candidate_f1_rf = candidates_f1[best_idx_f1_rf]
+print(f"Predictions for Function 1 (Random Forest):")
+print(f"  Mean range: [{mean_f1_rf.min():.4f}, {mean_f1_rf.max():.4f}]")
+print(f"  Std range: [{std_f1_rf.min():.4f}, {std_f1_rf.max():.4f}]")
+print(f"  Best predicted point: {best_candidate_f1_rf}")
+print(f"  Best predicted mean: {mean_f1_rf[best_idx_f1_rf]:.4f}")
 
 # =============================================================================
 # FUNCTION 2: PREDICTIONS (2D)
@@ -546,6 +575,16 @@ best_candidate_f5 = candidates_f5[best_idx_f5]
 print(f"  Best predicted point: {best_candidate_f5}")
 print(f"  Best predicted mean: {mean_f5[best_idx_f5]:.4f}")
 
+# Random Forest predictions (comparison model)
+mean_f5_rf, std_f5_rf = random_forest_predict(rf5, candidates_f5)
+best_idx_f5_rf = np.argmax(mean_f5_rf)
+best_candidate_f5_rf = candidates_f5[best_idx_f5_rf]
+print(f"Predictions for Function 5 (Random Forest):")
+print(f"  Mean range: [{mean_f5_rf.min():.4f}, {mean_f5_rf.max():.4f}]")
+print(f"  Std range: [{std_f5_rf.min():.4f}, {std_f5_rf.max():.4f}]")
+print(f"  Best predicted point: {best_candidate_f5_rf}")
+print(f"  Best predicted mean: {mean_f5_rf[best_idx_f5_rf]:.4f}")
+
 # =============================================================================
 # FUNCTION 6: PREDICTIONS (5D)
 # =============================================================================
@@ -586,6 +625,16 @@ best_candidate_f7 = candidates_f7[best_idx_f7]
 print(f"  Best predicted point: {best_candidate_f7}")
 print(f"  Best predicted mean: {mean_f7[best_idx_f7]:.4f}")
 
+# Random Forest predictions (comparison model)
+mean_f7_rf, std_f7_rf = random_forest_predict(rf7, candidates_f7)
+best_idx_f7_rf = np.argmax(mean_f7_rf)
+best_candidate_f7_rf = candidates_f7[best_idx_f7_rf]
+print(f"Predictions for Function 7 (Random Forest):")
+print(f"  Mean range: [{mean_f7_rf.min():.4f}, {mean_f7_rf.max():.4f}]")
+print(f"  Std range: [{std_f7_rf.min():.4f}, {std_f7_rf.max():.4f}]")
+print(f"  Best predicted point: {best_candidate_f7_rf}")
+print(f"  Best predicted mean: {mean_f7_rf[best_idx_f7_rf]:.4f}")
+
 # =============================================================================
 # FUNCTION 8: PREDICTIONS (8D)
 # =============================================================================
@@ -605,6 +654,16 @@ best_idx_f8 = np.argmax(mean_f8)
 best_candidate_f8 = candidates_f8[best_idx_f8]
 print(f"  Best predicted point: {best_candidate_f8}")
 print(f"  Best predicted mean: {mean_f8[best_idx_f8]:.4f}")
+
+# Random Forest predictions (comparison model)
+mean_f8_rf, std_f8_rf = random_forest_predict(rf8, candidates_f8)
+best_idx_f8_rf = np.argmax(mean_f8_rf)
+best_candidate_f8_rf = candidates_f8[best_idx_f8_rf]
+print(f"Predictions for Function 8 (Random Forest):")
+print(f"  Mean range: [{mean_f8_rf.min():.4f}, {mean_f8_rf.max():.4f}]")
+print(f"  Std range: [{std_f8_rf.min():.4f}, {std_f8_rf.max():.4f}]")
+print(f"  Best predicted point: {best_candidate_f8_rf}")
+print(f"  Best predicted mean: {mean_f8_rf[best_idx_f8_rf]:.4f}")
 
 
 # =============================================================================
@@ -698,14 +757,18 @@ print("="*60)
 # Best observed value so far
 y_best_1 = func1_outputs.max()
 
+# Exclude candidates that duplicate (or nearly duplicate) an already-sampled
+# point, so acquisition can't recommend re-querying a point you already have.
+valid_1 = unsampled_mask(candidates_f1, func1_inputs)
+
 # UCB (kappa=1.5 for 2D)
 ucb_1 = upper_confidence_bound(mean_f1, std_f1, kappa=0.1)
-best_ucb_idx_1 = np.argmax(ucb_1)
+best_ucb_idx_1 = np.argmax(np.where(valid_1, ucb_1, -np.inf))
 next_point_ucb_1 = candidates_f1[best_ucb_idx_1]
 
 # EI
 ei_1 = expected_improvement(mean_f1, std_f1, y_best_1, xi=0.1)
-best_ei_idx_1 = np.argmax(ei_1)
+best_ei_idx_1 = np.argmax(np.where(valid_1, ei_1, -np.inf))
 next_point_ei_1 = candidates_f1[best_ei_idx_1]
 
 print(f"UCB (κ=0.5):")
@@ -720,6 +783,27 @@ print(f"  EI value: {ei_1[best_ei_idx_1]:.4f}")
 print(f"  Mean: {mean_f1[best_ei_idx_1]:.4f}")
 print(f"  Std: {std_f1[best_ei_idx_1]:.4f}")
 
+# Random Forest acquisition (comparison model)
+ucb_1_rf = upper_confidence_bound(mean_f1_rf, std_f1_rf, kappa=0.1)
+best_ucb_idx_1_rf = np.argmax(np.where(valid_1, ucb_1_rf, -np.inf))
+next_point_ucb_1_rf = candidates_f1[best_ucb_idx_1_rf]
+
+ei_1_rf = expected_improvement(mean_f1_rf, std_f1_rf, y_best_1, xi=0.1)
+best_ei_idx_1_rf = np.argmax(np.where(valid_1, ei_1_rf, -np.inf))
+next_point_ei_1_rf = candidates_f1[best_ei_idx_1_rf]
+
+print(f"\n[Random Forest] UCB (κ=0.1):")
+print(f"  Next point: {next_point_ucb_1_rf[0]:.6f}-{next_point_ucb_1_rf[1]:.6f}")
+print(f"  UCB value: {ucb_1_rf[best_ucb_idx_1_rf]:.4f}")
+print(f"  Mean: {mean_f1_rf[best_ucb_idx_1_rf]:.4f}")
+print(f"  Std: {std_f1_rf[best_ucb_idx_1_rf]:.4f}")
+
+print(f"\n[Random Forest] EI (y_best={y_best_1:.4f}):")
+print(f"  Next point: {next_point_ei_1_rf[0]:.6f}-{next_point_ei_1_rf[1]:.6f}")
+print(f"  EI value: {ei_1_rf[best_ei_idx_1_rf]:.4f}")
+print(f"  Mean: {mean_f1_rf[best_ei_idx_1_rf]:.4f}")
+print(f"  Std: {std_f1_rf[best_ei_idx_1_rf]:.4f}")
+
 
 
 # =============================================================================
@@ -732,12 +816,16 @@ print("="*60)
 
 y_best_2 = func2_outputs.max()
 
+# Exclude candidates that duplicate (or nearly duplicate) an already-sampled
+# point, so acquisition can't recommend re-querying a point you already have.
+valid_2 = unsampled_mask(candidates_f2, func2_inputs)
+
 ucb_2 = upper_confidence_bound(mean_f2, std_f2, kappa=2.0)
-best_ucb_idx_2 = np.argmax(ucb_2)
+best_ucb_idx_2 = np.argmax(np.where(valid_2, ucb_2, -np.inf))
 next_point_ucb_2 = candidates_f2[best_ucb_idx_2]
 
 ei_2 = expected_improvement(mean_f2, std_f2, y_best_2, xi=0.1)
-best_ei_idx_2 = np.argmax(ei_2)
+best_ei_idx_2 = np.argmax(np.where(valid_2, ei_2, -np.inf))
 next_point_ei_2 = candidates_f2[best_ei_idx_2]
 
 print(f"UCB (κ=2.0):")
@@ -762,12 +850,16 @@ print("="*60)
 
 y_best_3 = func3_outputs.max()
 
+# Exclude candidates that duplicate (or nearly duplicate) an already-sampled
+# point, so acquisition can't recommend re-querying a point you already have.
+valid_3 = unsampled_mask(candidates_f3, func3_inputs)
+
 ucb_3 = upper_confidence_bound(mean_f3, std_f3, kappa=1.5)
-best_ucb_idx_3 = np.argmax(ucb_3)
+best_ucb_idx_3 = np.argmax(np.where(valid_3, ucb_3, -np.inf))
 next_point_ucb_3 = candidates_f3[best_ucb_idx_3]
 
 ei_3 = expected_improvement(mean_f3, std_f3, y_best_3, xi=0.01)
-best_ei_idx_3 = np.argmax(ei_3)
+best_ei_idx_3 = np.argmax(np.where(valid_3, ei_3, -np.inf))
 next_point_ei_3 = candidates_f3[best_ei_idx_3]
 
 print(f"UCB (κ=1.5):")
@@ -792,12 +884,16 @@ print("="*60)
 
 y_best_4 = func4_outputs.max()
 
+# Exclude candidates that duplicate (or nearly duplicate) an already-sampled
+# point, so acquisition can't recommend re-querying a point you already have.
+valid_4 = unsampled_mask(candidates_f4, func4_inputs)
+
 ucb_4 = upper_confidence_bound(mean_f4, std_f4, kappa=1.5)
-best_ucb_idx_4 = np.argmax(ucb_4)
+best_ucb_idx_4 = np.argmax(np.where(valid_4, ucb_4, -np.inf))
 next_point_ucb_4 = candidates_f4[best_ucb_idx_4]
 
 ei_4 = expected_improvement(mean_f4, std_f4, y_best_4, xi=0.01)
-best_ei_idx_4 = np.argmax(ei_4)
+best_ei_idx_4 = np.argmax(np.where(valid_4, ei_4, -np.inf))
 next_point_ei_4 = candidates_f4[best_ei_idx_4]
 
 print(f"UCB (κ=1.5):")
@@ -822,12 +918,16 @@ print("="*60)
 
 y_best_5 = func5_outputs.max()
 
+# Exclude candidates that duplicate (or nearly duplicate) an already-sampled
+# point, so acquisition can't recommend re-querying a point you already have.
+valid_5 = unsampled_mask(candidates_f5, func5_inputs)
+
 ucb_5 = upper_confidence_bound(mean_f5, std_f5, kappa=1.5)
-best_ucb_idx_5 = np.argmax(ucb_5)
+best_ucb_idx_5 = np.argmax(np.where(valid_5, ucb_5, -np.inf))
 next_point_ucb_5 = candidates_f5[best_ucb_idx_5]
 
 ei_5 = expected_improvement(mean_f5, std_f5, y_best_5, xi=0.01)
-best_ei_idx_5 = np.argmax(ei_5)
+best_ei_idx_5 = np.argmax(np.where(valid_5, ei_5, -np.inf))
 next_point_ei_5 = candidates_f5[best_ei_idx_5]
 
 print(f"UCB (κ=1.5):")
@@ -842,6 +942,27 @@ print(f"  EI value: {ei_5[best_ei_idx_5]:.4f}")
 print(f"  Mean: {mean_f5[best_ei_idx_5]:.4f}")
 print(f"  Std: {std_f5[best_ei_idx_5]:.4f}")
 
+# Random Forest acquisition (comparison model)
+ucb_5_rf = upper_confidence_bound(mean_f5_rf, std_f5_rf, kappa=1.5)
+best_ucb_idx_5_rf = np.argmax(np.where(valid_5, ucb_5_rf, -np.inf))
+next_point_ucb_5_rf = candidates_f5[best_ucb_idx_5_rf]
+
+ei_5_rf = expected_improvement(mean_f5_rf, std_f5_rf, y_best_5, xi=0.01)
+best_ei_idx_5_rf = np.argmax(np.where(valid_5, ei_5_rf, -np.inf))
+next_point_ei_5_rf = candidates_f5[best_ei_idx_5_rf]
+
+print(f"\n[Random Forest] UCB (κ=1.5):")
+print(f"  Next point: {next_point_ucb_5_rf[0]:.6f}-{next_point_ucb_5_rf[1]:.6f}-{next_point_ucb_5_rf[2]:.6f}-{next_point_ucb_5_rf[3]:.6f}")
+print(f"  UCB value: {ucb_5_rf[best_ucb_idx_5_rf]:.4f}")
+print(f"  Mean: {mean_f5_rf[best_ucb_idx_5_rf]:.4f}")
+print(f"  Std: {std_f5_rf[best_ucb_idx_5_rf]:.4f}")
+
+print(f"\n[Random Forest] EI (y_best={y_best_5:.4f}):")
+print(f"  Next point: {next_point_ei_5_rf[0]:.6f}-{next_point_ei_5_rf[1]:.6f}-{next_point_ei_5_rf[2]:.6f}-{next_point_ei_5_rf[3]:.6f}")
+print(f"  EI value: {ei_5_rf[best_ei_idx_5_rf]:.4f}")
+print(f"  Mean: {mean_f5_rf[best_ei_idx_5_rf]:.4f}")
+print(f"  Std: {std_f5_rf[best_ei_idx_5_rf]:.4f}")
+
 # =============================================================================
 # FUNCTION 6: ACQUISITION (5D)
 # =============================================================================
@@ -852,12 +973,16 @@ print("="*60)
 
 y_best_6 = func6_outputs.max()
 
+# Exclude candidates that duplicate (or nearly duplicate) an already-sampled
+# point, so acquisition can't recommend re-querying a point you already have.
+valid_6 = unsampled_mask(candidates_f6, func6_inputs)
+
 ucb_6 = upper_confidence_bound(mean_f6, std_f6, kappa=2.5)
-best_ucb_idx_6 = np.argmax(ucb_6)
+best_ucb_idx_6 = np.argmax(np.where(valid_6, ucb_6, -np.inf))
 next_point_ucb_6 = candidates_f6[best_ucb_idx_6]
 
 ei_6 = expected_improvement(mean_f6, std_f6, y_best_6, xi=0.01)
-best_ei_idx_6 = np.argmax(ei_6)
+best_ei_idx_6 = np.argmax(np.where(valid_6, ei_6, -np.inf))
 next_point_ei_6 = candidates_f6[best_ei_idx_6]
 
 print(f"UCB (κ=2.5):")
@@ -882,12 +1007,16 @@ print("="*60)
 
 y_best_7 = func7_outputs.max()
 
+# Exclude candidates that duplicate (or nearly duplicate) an already-sampled
+# point, so acquisition can't recommend re-querying a point you already have.
+valid_7 = unsampled_mask(candidates_f7, func7_inputs)
+
 ucb_7 = upper_confidence_bound(mean_f7, std_f7, kappa=1.7)
-best_ucb_idx_7 = np.argmax(ucb_7)
+best_ucb_idx_7 = np.argmax(np.where(valid_7, ucb_7, -np.inf))
 next_point_ucb_7 = candidates_f7[best_ucb_idx_7]
 
 ei_7 = expected_improvement(mean_f7, std_f7, y_best_7, xi=0.01)
-best_ei_idx_7 = np.argmax(ei_7)
+best_ei_idx_7 = np.argmax(np.where(valid_7, ei_7, -np.inf))
 next_point_ei_7 = candidates_f7[best_ei_idx_7]
 
 print(f"UCB (κ=1.7):")
@@ -902,6 +1031,27 @@ print(f"  EI value: {ei_7[best_ei_idx_7]:.4f}")
 print(f"  Mean: {mean_f7[best_ei_idx_7]:.4f}")
 print(f"  Std: {std_f7[best_ei_idx_7]:.4f}")
 
+# Random Forest acquisition (comparison model)
+ucb_7_rf = upper_confidence_bound(mean_f7_rf, std_f7_rf, kappa=1.7)
+best_ucb_idx_7_rf = np.argmax(np.where(valid_7, ucb_7_rf, -np.inf))
+next_point_ucb_7_rf = candidates_f7[best_ucb_idx_7_rf]
+
+ei_7_rf = expected_improvement(mean_f7_rf, std_f7_rf, y_best_7, xi=0.01)
+best_ei_idx_7_rf = np.argmax(np.where(valid_7, ei_7_rf, -np.inf))
+next_point_ei_7_rf = candidates_f7[best_ei_idx_7_rf]
+
+print(f"\n[Random Forest] UCB (κ=1.7):")
+print(f"  Next point: {next_point_ucb_7_rf[0]:.6f}-{next_point_ucb_7_rf[1]:.6f}-{next_point_ucb_7_rf[2]:.6f}-{next_point_ucb_7_rf[3]:.6f}-{next_point_ucb_7_rf[4]:.6f}-{next_point_ucb_7_rf[5]:.6f}")
+print(f"  UCB value: {ucb_7_rf[best_ucb_idx_7_rf]:.4f}")
+print(f"  Mean: {mean_f7_rf[best_ucb_idx_7_rf]:.4f}")
+print(f"  Std: {std_f7_rf[best_ucb_idx_7_rf]:.4f}")
+
+print(f"\n[Random Forest] EI (y_best={y_best_7:.4f}):")
+print(f"  Next point: {next_point_ei_7_rf[0]:.6f}-{next_point_ei_7_rf[1]:.6f}-{next_point_ei_7_rf[2]:.6f}-{next_point_ei_7_rf[3]:.6f}-{next_point_ei_7_rf[4]:.6f}-{next_point_ei_7_rf[5]:.6f}")
+print(f"  EI value: {ei_7_rf[best_ei_idx_7_rf]:.4f}")
+print(f"  Mean: {mean_f7_rf[best_ei_idx_7_rf]:.4f}")
+print(f"  Std: {std_f7_rf[best_ei_idx_7_rf]:.4f}")
+
 # =============================================================================
 # FUNCTION 8: ACQUISITION (8D)
 # =============================================================================
@@ -912,12 +1062,16 @@ print("="*60)
 
 y_best_8 = func8_outputs.max()
 
+# Exclude candidates that duplicate (or nearly duplicate) an already-sampled
+# point, so acquisition can't recommend re-querying a point you already have.
+valid_8 = unsampled_mask(candidates_f8, func8_inputs)
+
 ucb_8 = upper_confidence_bound(mean_f8, std_f8, kappa=3.0)
-best_ucb_idx_8 = np.argmax(ucb_8)
+best_ucb_idx_8 = np.argmax(np.where(valid_8, ucb_8, -np.inf))
 next_point_ucb_8 = candidates_f8[best_ucb_idx_8]
 
 ei_8 = expected_improvement(mean_f8, std_f8, y_best_8, xi=0.02)
-best_ei_idx_8 = np.argmax(ei_8)
+best_ei_idx_8 = np.argmax(np.where(valid_8, ei_8, -np.inf))
 next_point_ei_8 = candidates_f8[best_ei_idx_8]
 
 print(f"UCB (κ=3.0):")
@@ -931,6 +1085,27 @@ print(f"  Next point: {next_point_ei_8[0]:.6f}-{next_point_ei_8[1]:.6f}-{next_po
 print(f"  EI value: {ei_8[best_ei_idx_8]:.4f}")
 print(f"  Mean: {mean_f8[best_ei_idx_8]:.4f}")
 print(f"  Std: {std_f8[best_ei_idx_8]:.4f}")
+
+# Random Forest acquisition (comparison model)
+ucb_8_rf = upper_confidence_bound(mean_f8_rf, std_f8_rf, kappa=3.0)
+best_ucb_idx_8_rf = np.argmax(np.where(valid_8, ucb_8_rf, -np.inf))
+next_point_ucb_8_rf = candidates_f8[best_ucb_idx_8_rf]
+
+ei_8_rf = expected_improvement(mean_f8_rf, std_f8_rf, y_best_8, xi=0.02)
+best_ei_idx_8_rf = np.argmax(np.where(valid_8, ei_8_rf, -np.inf))
+next_point_ei_8_rf = candidates_f8[best_ei_idx_8_rf]
+
+print(f"\n[Random Forest] UCB (κ=3.0):")
+print(f"  Next point: {next_point_ucb_8_rf[0]:.6f}-{next_point_ucb_8_rf[1]:.6f}-{next_point_ucb_8_rf[2]:.6f}-{next_point_ucb_8_rf[3]:.6f}-{next_point_ucb_8_rf[4]:.6f}-{next_point_ucb_8_rf[5]:.6f}-{next_point_ucb_8_rf[6]:.6f}-{next_point_ucb_8_rf[7]:.6f}")
+print(f"  UCB value: {ucb_8_rf[best_ucb_idx_8_rf]:.4f}")
+print(f"  Mean: {mean_f8_rf[best_ucb_idx_8_rf]:.4f}")
+print(f"  Std: {std_f8_rf[best_ucb_idx_8_rf]:.4f}")
+
+print(f"\n[Random Forest] EI (y_best={y_best_8:.4f}):")
+print(f"  Next point: {next_point_ei_8_rf[0]:.6f}-{next_point_ei_8_rf[1]:.6f}-{next_point_ei_8_rf[2]:.6f}-{next_point_ei_8_rf[3]:.6f}-{next_point_ei_8_rf[4]:.6f}-{next_point_ei_8_rf[5]:.6f}-{next_point_ei_8_rf[6]:.6f}-{next_point_ei_8_rf[7]:.6f}")
+print(f"  EI value: {ei_8_rf[best_ei_idx_8_rf]:.4f}")
+print(f"  Mean: {mean_f8_rf[best_ei_idx_8_rf]:.4f}")
+print(f"  Std: {std_f8_rf[best_ei_idx_8_rf]:.4f}")
 
 # =============================================================================
 # VISUALIZE ACQUISITION FOR FUNCTION 1
