@@ -10,6 +10,15 @@ import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 
 
+def log_magnitude(y, floor=1e-323):
+    """
+    log10 of the absolute output, for functions whose outputs span hundreds of
+    orders of magnitude (e.g. F1). Exact zeros are floored at the smallest
+    positive float64 so they map to about -323 instead of -inf. The sign is dropped.
+    """
+    return np.log10(np.maximum(np.abs(np.asarray(y, dtype=float)), floor))
+
+
 def fit_random_forest_surrogate(X_train, y_train, n_estimators=200, random_state=42):
     """
     Fit a Random Forest surrogate model.
