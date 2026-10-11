@@ -278,6 +278,17 @@ def expected_improvement(mu, sigma, y_best, xi=0.01):
     return ei
 
 
+def local_candidates(center, half_width=0.04, n=20000, seed=42):
+    """
+    Random candidates inside a small box around `center`, clipped to [0, 1].
+    Uses its own generator so it does not change the global random stream.
+    """
+    center = np.asarray(center, dtype=float)
+    rng = np.random.default_rng(seed)
+    pts = center + rng.uniform(-half_width, half_width, size=(n, center.size))
+    return np.clip(pts, 0.0, 1.0)
+
+
 def unsampled_mask(candidates, existing_points, min_dist=1e-3):
     """
     Boolean mask marking which candidates are NOT within min_dist of any
