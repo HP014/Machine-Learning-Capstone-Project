@@ -1,5 +1,33 @@
 # Changelog
 
+## Week 8 - Model & Pipeline Changes
+
+**Week 7 results against predictions:** Three functions set a new best: F1 (1.91e-6, up from 7.7e-16), F3 (-0.014985, up from -0.020138) and F8 (9.892785, up from 9.890584). The local searches added last week helped: F3 landed on target and F4 recovered from -2.83 to 0.271, although F4 was still 2.8 standard deviations below its prediction. F7 was the biggest miss, 4.1 standard deviations below prediction.
+
+- F1: log-space GP predicted log10|y| of 4.3 (an extrapolation), actual 1.91e-6. New best.
+- F2: GP predicted 0.465 (std 0.221), actual 0.605.
+- F3: local GP predicted -0.0125 (std 0.0196), actual -0.0150. New best.
+- F4: local GP predicted 0.799 (std 0.187), actual 0.271.
+- F5: GP predicted 2610.5 (std 133.2), actual 2369.0, now my second best result.
+- F6: GP predicted -0.337 (std 0.136), actual -0.434.
+- F7: GP predicted 1.696 (std 0.187), actual 0.925.
+- F8: GP predicted 9.833 (std 0.194), actual 9.893. New best.
+
+**Exploit around the best point:** With most functions now having an established best region, this round I exploited instead of exploring. For each function I searched a box of ±0.02 around its best point and chose the highest predicted value, excluding anything within 0.003 of a sampled point. The GPs were refitted with a floor of 0.05 on the length scale and normalised outputs, because the previous fits for F2 and F5 collapsed into spiky, near white-noise kernels (length scales of 0.0085 and 1e-5) that made local predictions meaningless. Small steps were chosen on purpose, since F2, F4 and F7 have all dropped sharply when moving away from their best. Expected gains are small (about 1 to 3 percent where the model predicts any). These searches were run outside the main script, so the script itself has not changed beyond loading the Week 7 data.
+
+**F1 is the exception:** I tried fitting a single Gaussian bump to F1's positive outputs, on the idea that log10(y) would then be a simple curved surface. It failed a hold-out test: fitted without the newest point, it predicted 10^-31 for a value that was actually 10^-5.7, and its centre estimate moved across x1 0.48 to 0.63 and x2 0.55 to 0.75 when resampled. F1 appears to have several narrow, separate features (a large negative spike near [0.650, 0.682] and a positive one near my best point) that a GP cannot pin down with this few points. Since F1's outputs are exact (repeated queries returned identical values), I am switching to a pattern search, a basic derivative-free method. A small step from the best point shows which direction the value climbs. Week 8 steps +0.012 in x2, Week 9 steps +0.012 in x1, and Week 10 jumps along the combined direction. A large rise means keep going that way, and a drop means reverse. The cost is that this takes about three weeks, with one query per week.
+
+**Model choice per function (Week 8 queries):**
+
+- F1: Pattern search probe, `[0.582552, 0.564941]`. A GP and a Gaussian bump both failed on this data, so I am measuring the direction of improvement directly with a small step in x2.
+- F2: Exploit GP, `[0.699372, 0.911737]`. Predicted 0.587 (std 0.085), slightly below my best of 0.6112, so this is a close neighbour probe on a noisy peak (three points within 0.007 scored 0.611, 0.606 and 0.510) and not an expected gain.
+- F3: Exploit GP, `[0.421890, 0.412697, 0.464681]`. Predicted -0.0133 (std 0.0115) against a best of -0.0150, continuing the trend of the last local search.
+- F4: Gradient step, `[0.367331, 0.419785, 0.411319, 0.396967]`. The refitted GP predicts nothing above my best anywhere nearby, so I estimated a direction from the four nearest points instead. Every step towards higher x1 lost value, so this is a 0.02 step towards lower x1 and x2. Low confidence, since it is four equations for four unknowns.
+- F5: Exploit GP, `[0.368833, 0.874433, 1.000000, 1.000000]`. Predicted 3023.6 (std 54.1) against a best of 2986.9. Two inputs sit at the upper limit of 1.0 because the search box was clipped there.
+- F6: Exploit GP, `[0.451463, 0.383362, 0.638745, 0.795203, 0.137146]`. Predicted -0.1761 (std 0.0139) against a best of -0.1902. Last week's move away from the best lost value, so I am staying close to it.
+- F7: Exploit GP, `[0.024039, 0.163217, 0.318627, 0.186638, 0.379364, 0.751014]`. Predicted 2.1007 (std 0.0787) against a best of 2.0242. Last week's global pick missed by 4.1 standard deviations, so I am staying within the best region.
+- F8: Exploit GP, `[0.275641, 0.051067, 0.092131, 0.088784, 0.933418, 0.490818, 0.173071, 0.626653]`. Predicted 9.9197 (std 0.0153) against a best of 9.8928, continuing the steady climb.
+
 ## Week 7 - Model & Pipeline Changes
 
 **Week 6 results against predictions:** Only F6 set a new best (-0.190210, up from -0.312637). The Random Forest's uncertainty held up well: all four RF picks landed within about 1.1 standard deviations of their prediction. The GP was overconfident on F3 (1.4 std below prediction) and F4 (about 6 std below), but did better than predicted on F6. With only eight points this is a hint rather than proof.
