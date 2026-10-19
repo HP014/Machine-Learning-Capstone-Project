@@ -1,5 +1,35 @@
 # Changelog
 
+## Week 9 - Model & Pipeline Changes
+
+**Week 8 results against predictions:** All eight functions set a new best for the first time: F1 (2.30e-5, up from 1.91e-6), F2 (0.6670, up from 0.6112), F3 (-0.0124, up from -0.0150), F4 (0.6082, up from 0.3675), F5 (3174.8, up from 2986.9), F6 (-0.1036, up from -0.1902), F7 (2.2010, up from 2.0242) and F8 (9.9100, up from 9.8928). Five picks beat their prediction, F3 landed on it, and F8 was marginally under (9.910 against 9.920) while still improving. F6 beat its prediction by 5 standard deviations and F5 by 2.8, so the models are being too cautious about these peaks.
+
+- F1: x2 probe of +0.012 multiplied the output by 12.1 (1.91e-6 to 2.30e-5).
+- F2: predicted 0.587 (std 0.085), actual 0.667.
+- F3: predicted -0.0133 (std 0.0115), actual -0.0124.
+- F4: direction step from the nearest points, actual 0.608 against a previous best of 0.368.
+- F5: predicted 3023.6 (std 54.1), actual 3174.8.
+- F6: predicted -0.1761 (std 0.0139), actual -0.1036.
+- F7: predicted 2.1007 (std 0.0787), actual 2.2010.
+- F8: predicted 9.9197 (std 0.0153), actual 9.9100.
+
+**Why kappa and xi were not changed:** The Week 9 picks come from a ±0.02 box around each best point, where the GP's uncertainty is small. I checked how far the UCB pick moves as kappa goes from 0 to 2 in that box. For most functions it moves by under 0.03 in input space and costs only a few percent of predicted value (for example F2 falls from 0.660 to 0.616). F4 does not move at all, because its GP is about equally uncertain everywhere nearby (std about 0.54), so adding uncertainty cannot change the ranking. F8 moves the most (0.04 to 0.07), but only because it has eight inputs. Since all eight functions improved under pure exploitation, there is no evidence that more exploration is needed. The box size is the exploration dial I would turn first, and if a function stalls for about two weeks I will widen the box to ±0.04 to ±0.08 and add a small kappa of 0.5 to 1.0. The kappa and xi values in the script are unchanged.
+
+**F4 repeats a successful step:** The GP predicts nothing above F4's best anywhere nearby and its pick goes against the move that worked, so I am repeating the successful step (lower x1 and x2, slightly higher x3 and x4) in the pattern-search style. The nearest-neighbour gradient estimate is badly conditioned (F4 also contains a duplicated row), so I am not using it.
+
+**F1 continues the pattern search:** The x2 probe worked, so the next step probes x1 by +0.012 from the new best. If the value rises, I keep going that way, and if it drops I reverse. The GP alternative `[0.579743, 0.584776]` (continuing in x2) was noted but not chosen, since the x1 probe gives the second direction needed.
+
+**Model choice per function (Week 9 queries):**
+
+- F1: Pattern search probe, `[0.594552, 0.564941]`. The x2 step multiplied the output by 12, and the x1 step gives the second direction.
+- F2: Exploit GP, `[0.698109, 0.901314]`. Predicted 0.660 (std 0.078), continuing towards lower x2, which is the direction that worked.
+- F3: Exploit GP, `[0.401915, 0.392969, 0.455665]`. Predicted -0.0110 (std 0.0041), continuing towards lower x1 and x2.
+- F4: Repeated step, `[0.350331, 0.410785, 0.413319, 0.400967]`. Low confidence, since the GP gives no usable signal here.
+- F5: Exploit GP, `[0.371546, 0.894421, 1.000000, 1.000000]`. Predicted 3335.1 (std 24.7). Inputs 3 and 4 stay at the 1.0 limit, so the peak may lie at or beyond it.
+- F6: Exploit GP, `[0.443605, 0.375980, 0.622451, 0.802268, 0.156989]`. Predicted -0.142, slightly below the best, but it moves in the same direction as the step that worked.
+- F7: Exploit GP, `[0.004450, 0.176780, 0.315376, 0.202900, 0.359673, 0.731508]`. Predicted 2.303 (std 0.027). The first input is close to the lower limit of 0.
+- F8: Exploit GP, `[0.255752, 0.070913, 0.098188, 0.104820, 0.944183, 0.507066, 0.169066, 0.638957]`. Predicted 9.9287 (std 0.0136), continuing the steady climb.
+
 ## Week 8 - Model & Pipeline Changes
 
 **Week 7 results against predictions:** Three functions set a new best: F1 (1.91e-6, up from 7.7e-16), F3 (-0.014985, up from -0.020138) and F8 (9.892785, up from 9.890584). The local searches added last week helped: F3 landed on target and F4 recovered from -2.83 to 0.271, although F4 was still 2.8 standard deviations below its prediction. F7 was the biggest miss, 4.1 standard deviations below prediction.
