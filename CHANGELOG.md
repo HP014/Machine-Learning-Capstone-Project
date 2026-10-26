@@ -174,3 +174,63 @@
 - F6: GP (EI). Best predicted mean of all four candidates (-0.3970 vs RF's best of -0.8256).
 - F7: RF (UCB/EI agree). Similar mean to GP (1.7164 vs 1.6919) but RF reports much higher, more honest uncertainty (std 0.5929 vs GP's 0.1918).
 - F8: GP (EI). A safe refinement close to my current best (9.8906) rather than RF's much larger, riskier exploratory jump.
+
+## Week 5 - Strategy Notes
+
+**Results coming in (Week 4):** F1 3.8e-34, F2 0.150, F3 -0.0932, F4 0.3675 (a repeat of the best point), F5 2986.9 (a repeat of the peak), F6 -0.469, F7 1.642, F8 9.738.
+
+- F1: Changed to an RBF kernel with a 0.3 length scale and added white noise. Still flat and nothing of note found. UCB keeps repeating the same point regardless of kernel or κ, so I follow EI to test a completely new region near the corner.
+- F2: UCB and EI agree on a new region, which gives me confidence. I keep κ=2.0 and ξ=0.05 and follow the agreed point.
+- F3: UCB and EI disagree. EI has the higher mean (-0.0089 vs -0.0889) and lower uncertainty, so I follow EI with κ=1.5 and ξ=0.01.
+- F4: UCB and EI agree, so I continue exploring around the best (0.3675) with κ=1.5 and ξ=0.005.
+- F5: UCB and EI agree on a region with very high uncertainty (std 316.23). I follow it to help the GP learn, keeping κ=1.5.
+- F6: EI has a much higher mean (-0.3614 vs -1.1148) and lower uncertainty, so I follow EI with κ=2.5.
+- F7: UCB and EI agree on a point with a mean close to the best (2.0242). I refine that region with κ=1.7.
+- F8: EI has a higher mean (9.8504 vs 9.6249) and lower uncertainty, so I follow EI with κ=3.0 and ξ=0.02.
+
+## Week 4 - Strategy Notes
+
+**Results coming in (Week 3):** New bests for F4 (0.3675), F7 (2.0242) and F8 (9.8884). F1 3.8e-34, F2 0.258, F3 -0.114, F5 2986.9 (the peak, re-queried), F6 -0.878.
+
+- F1: Still flat. UCB repeats the same point, so I follow EI again. The Matern (ν=1.5) kernel is kept and κ stays at 2.5. It remains the toughest function.
+- F2: A lower output, so the extra exploration did not pay off. I keep κ=2.0 and ξ=0.05 and follow the point where UCB and EI agree.
+- F3: Another decline. UCB and EI agree on a new region with a better predicted mean (0.0015) than the best (-0.0348), so I follow it with κ=1.5.
+- F4: New best (0.3675). I exploit by following UCB, which refines around the best with very low uncertainty (std 0.0010).
+- F5: The peak is confirmed at 2986.94 with no change. UCB and EI agree on refining this region, so I keep exploiting it.
+- F6: A lower output. EI has a higher mean and lower uncertainty than UCB, so I follow EI with κ=2.5.
+- F7: New best (2.0242). UCB and EI agree, so I refine the region with κ=1.7.
+- F8: New best (9.8884). EI has a higher mean and lower uncertainty, so I follow EI with κ=3.0 and ξ=0.02.
+
+## Week 3 - Strategy Notes
+
+**Results coming in (Week 2):** New bests for F4 (-0.0055), F6 (-0.3126) and F7 (1.683). F2 fell to 0.481, F3 to -0.433 (a failed corner), F5 to 2152.7 and F8 to 9.685.
+
+- F1: Switched the kernel from RBF to Matern (ν=1.5) for more flexibility, to catch patterns the RBF might miss in the flat landscape. I raised κ to encourage exploration and followed EI because it chose a new region. Next step is to account for noise.
+- F2: Exploitation failed with a lower output. I raised κ to 2 and increased ξ for more exploration.
+- F3: The new output was far worse. I return to the best known point (-0.0348, still from the original data) and exploit it with κ=1.5.
+- F4: A better output. I exploit and lower κ to 1.5.
+- F5: Exploring nearby gave a lower output, so I go back to the peak, refine it, and exploit it heavily to find the exact maximum.
+- F6: Further improvement. I keep κ the same to continue encouraging exploration.
+- F7: Improvement seen. I focus more on exploitation by lowering κ to about 1.7.
+- F8: A slightly lower output, so I explore more aggressively by raising κ and ξ.
+
+## Week 2 - Strategy Notes
+
+**Results coming in (Week 1):** New bests for F4 (-0.289), F5 (2986.94, a huge peak) and F8 (9.781). F1 1.9e-245 (flat), F2 0.021, F3 -0.110, F6 -1.118, F7 1.361.
+
+- F1: Continue to explore, as it remains a tougher case (EI picked a point on the boundary).
+- F2: Looks promising, so I exploit with slight exploration.
+- F3: Strong evidence for the current region, so I keep exploring it.
+- F4: A more balanced mix of exploring and exploiting.
+- F5: Found a massive maximum. UCB wants to repeat the same point, which gives no new information, so I explore nearby with high uncertainty. If that fails, I go back.
+- F6: Following EI to explore a promising region.
+- F7: Seemed stagnant, so I reduced κ (from 2.5 to 2.0) to focus on the better region while leaving space to explore.
+- F8: Following EI, where the GP predicts improvement.
+
+So far improvements have been seen. The configurations for F1 and F7 need experimenting.
+
+## Week 1 - Strategy Notes
+
+I fitted a GP for each function, with kernels chosen by dimension (RBF for F1 and F2, Matern 2.5 for F3 and F4, Matern 1.5 for F5 to F8), and scored 10,000 random candidate points with UCB and EI. κ followed a simple rule by dimension (1.5 for the 2D functions, 2.0 for F3 to F5, 2.5 for F6 to F8) with ξ at 0.01 for all. The chat first suggested manual or random queries, but the points submitted came from the GP.
+
+**Observations across Weeks 1 to 5:** F1 stayed flat throughout, and F2 never beat its starting 0.6112. F5's peak came in Week 1. The repeated queries (F1 Weeks 3 and 4, F4 Week 4, F5 Weeks 3 and 4) happened because UCB and EI kept proposing known points and I followed them, which led to the duplicate safeguard added later. An F1 print statement said κ=0.01 while the code used 1.5, which turned out to be a typo in the label.
