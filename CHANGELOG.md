@@ -1,5 +1,39 @@
 # Changelog
 
+## Week 11 - Model & Pipeline Changes
+
+**Week 10 results against predictions:** Three functions set a new best: F5 (3532.9, up from 3341.8), F7 (2.4645, up from 2.3325) and F8 (9.9366, up from 9.9276). F1, F2, F3, F4 and F6 did not improve. F5 and F7 beat their predictions by 1.9 and 2.6 standard deviations, F2 and F8 landed within one, and F3 missed by 1.8.
+
+- F1: x1 probe back by 0.006 returned 1.65e-5. The best is unchanged at 2.30e-5.
+- F2: predicted 0.596 (std 0.071), actual 0.630.
+- F3: predicted +0.0015 (std 0.0087), actual -0.0141.
+- F4: halved step, actual 0.4755 (a loss of 0.14).
+- F5: predicted 3491.8 (std 21.6), actual 3532.9.
+- F6: halved step, actual -0.1108.
+- F7: predicted 2.4005 (std 0.025), actual 2.4645.
+- F8: predicted 9.9451 (std 0.0138), actual 9.9366.
+
+**F1 profile along x1:** With three points along x1 at x2 = 0.5649 (+1.65e-5, +2.30e-5, then -8.4e-5), a curve through them peaks at x1 = 0.5805 (about 2.5e-5) and crosses zero at 0.574 and 0.587, so the positive stripe is only about 0.0135 wide. The x1 position is now pinned down, so the next query sits at the peak in x1 and steps +0.015 in x2, the direction that gave a 12x gain.
+
+**Line searches for F4 and F6:** For F4 I fitted a curve through the four points along my recent steps. It peaks between the Week 8 and Week 9 points (about 40% of the way along, predicted 0.645), so I am sampling there. For F6 the old success line is used up, since a curve through its three points peaks at -0.1022, barely above the best. The failed Week 9 step had a large component at right angles to that line, so I take half a step in the opposite perpendicular direction.
+
+**F2 and F3:** For F2, moving x1 up by 0.003 lost 0.037, so the next probe is the same distance on the other side. For F3, the peak along the diagonal I was following is already at the Week 9 point, so continuing would go past it. I am following the GP's pick instead, which lowers x3 while shifting x1 up and x2 down.
+
+**Dials unchanged:** kappa and xi were left at their script values again, since the picks come from small boxes and several functions are still improving.
+
+**Documents and figures refreshed:** The README, model card, datasheet and figures now run to Week 10. The prediction-error check covers 28 GP predictions, 46% of them within one standard deviation.
+
+**Model choice per function (Week 11 queries):**
+
+- F1: Step along the stripe, `[0.580530, 0.579941]`. The x1 peak is located, so x2 moves up by 0.015.
+- F2: Probe, `[0.696361, 0.911737]`. The same distance on the other side of the best in x1.
+- F3: GP, `[0.410917, 0.373592, 0.435732]`. Predicted -0.0040 (std 0.0086). Low confidence.
+- F4: Line-search point, `[0.360106, 0.415960, 0.412169, 0.398667]`. Predicted about 0.645 from the fitted curve along the line.
+- F5: Exploit GP, `[0.404793, 0.934333, 1.000000, 1.000000]`. Predicted 3742.1. Its quoted uncertainty (std 5) is far too small, so treat it as a direction only.
+- F6: Perpendicular half step, `[0.451652, 0.382729, 0.642765, 0.786937, 0.131992]`. The old line is exhausted.
+- F7: Exploit GP, `[0.007862, 0.197102, 0.307793, 0.238998, 0.320152, 0.693900]`. Predicted 2.5333 (std 0.040).
+- F8: Exploit GP, `[0.216054, 0.104155, 0.098042, 0.102654, 0.971719, 0.510469, 0.172090, 0.660307]`. Predicted 9.9528 (std 0.0103).
+
 ## Week 10 - Model & Pipeline Changes
 
 **Week 9 results against predictions:** Five functions set a new best: F3 (-0.0054, up from -0.0124), F4 (0.6169, up from 0.6082), F5 (3341.8, up from 3174.8), F7 (2.3325, up from 2.2010) and F8 (9.9276, up from 9.9100). F1, F2 and F6 did not improve. F5 and F8 landed almost exactly on their predictions, F3 and F7 beat theirs by about 1.3 and 1.1 standard deviations, and F2 landed 1.5 standard deviations below.

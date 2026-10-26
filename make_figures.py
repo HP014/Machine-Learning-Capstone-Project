@@ -137,6 +137,9 @@ PRED = [
     (9, 2, "GP", 0.660300, 0.077700, 0.541969), (9, 3, "GP", -0.011000, 0.004100, -0.005410),
     (9, 5, "GP", 3335.117800, 24.674900, 3341.826050), (9, 6, "GP", -0.141700, 0.053500, -0.183826),
     (9, 7, "GP", 2.303000, 0.026800, 2.332485), (9, 8, "GP", 9.928700, 0.013600, 9.927641),
+    (10, 2, "GP", 0.596100, 0.070500, 0.630413), (10, 3, "GP", 0.001500, 0.008700, -0.014070),
+    (10, 5, "GP", 3491.758800, 21.554800, 3532.851177), (10, 7, "GP", 2.400500, 0.025000, 2.464515),
+    (10, 8, "GP", 9.945100, 0.013800, 9.936602),
 ]
 with open(ROOT / "results" / "prediction_log.csv", "w", newline="") as fh:
     wr = csv.writer(fh)
@@ -145,8 +148,8 @@ with open(ROOT / "results" / "prediction_log.csv", "w", newline="") as fh:
         wr.writerow([wk, f, m, mu, sd, act, round((act - mu) / sd, 3)])
 
 fig, ax = plt.subplots(figsize=(10, 5.5), constrained_layout=True)
-wk_color = {6: "#56B4E9", 7: "#E69F00", 8: "#009E73", 9: "#CC79A7"}
-offset = {6: -0.27, 7: -0.09, 8: 0.09, 9: 0.27}
+wk_color = {6: "#56B4E9", 7: "#E69F00", 8: "#009E73", 9: "#CC79A7", 10: "#D55E00"}
+offset = {6: -0.32, 7: -0.16, 8: 0.0, 9: 0.16, 10: 0.32}
 for wk, f, m, mu, sd, act in PRED:
     if f == 1:
         continue
@@ -159,7 +162,7 @@ ax.set_xticks(range(2, 9))
 ax.set_xticklabels([f"F{f}" for f in range(2, 9)])
 ax.set_ylabel("(actual - predicted) / predicted std")
 ax.set_title("Prediction error in standard deviations (shaded band = within 1 std)", fontweight="bold")
-handles = [plt.Line2D([], [], marker="o", ls="", color=wk_color[w], markeredgecolor="black", label=f"Week {w} result") for w in (6, 7, 8, 9)]
+handles = [plt.Line2D([], [], marker="o", ls="", color=wk_color[w], markeredgecolor="black", label=f"Week {w} result") for w in (6, 7, 8, 9, 10)]
 handles += [plt.Line2D([], [], marker="o", ls="", color="white", markeredgecolor="black", label="GP pick"),
             plt.Line2D([], [], marker="s", ls="", color="white", markeredgecolor="black", label="RF pick")]
 ax.legend(handles=handles, frameon=False, ncol=2, loc="lower right")
