@@ -1,5 +1,37 @@
 # Changelog
 
+## Week 10 - Model & Pipeline Changes
+
+**Week 9 results against predictions:** Five functions set a new best: F3 (-0.0054, up from -0.0124), F4 (0.6169, up from 0.6082), F5 (3341.8, up from 3174.8), F7 (2.3325, up from 2.2010) and F8 (9.9276, up from 9.9100). F1, F2 and F6 did not improve. F5 and F8 landed almost exactly on their predictions, F3 and F7 beat theirs by about 1.3 and 1.1 standard deviations, and F2 landed 1.5 standard deviations below.
+
+- F1: the +0.012 x1 probe returned -8.4e-5, so the sign flipped. The best is unchanged at 2.30e-5.
+- F2: predicted 0.660 (std 0.078), actual 0.542.
+- F3: predicted -0.0110 (std 0.0041), actual -0.0054.
+- F4: direction step, actual 0.6169 (a gain of only 0.009, after 0.24 the week before).
+- F5: predicted 3335.1 (std 24.7), actual 3341.8.
+- F6: predicted -0.142 (std 0.054), actual -0.1838.
+- F7: predicted 2.303 (std 0.027), actual 2.3325.
+- F8: predicted 9.9287 (std 0.0136), actual 9.9276.
+
+**F1 uses a smaller probe:** The x1 step flipped the sign of F1's output (positive at x1 = 0.5826, -8.4e-5 at 0.5946), so F1 changes sign on a scale finer than my 0.012 step. The next probe steps back by 0.006 in x1 and keeps x2 fixed. With three points along x1 at the same x2, the profile along that direction can be fitted and the positive peak located, if F1 behaves like a wave. The GP's own pick extrapolates to a predicted value of about 0.09, which I do not believe, so I did not use it.
+
+**Pattern search when gains fade or fail (F4 and F6):** F4's gain shrank to +0.009 after +0.24 the week before, so I am halving the step along the same direction. F6 lost 0.08 on its last step. The refitted GP keeps proposing points next to that failed one, even with a larger exclusion zone, because it predicts everything nearby is worse than the best. I therefore halved the step that worked two weeks earlier (lower x1, x2, x3 and x4, higher x5). Both picks are low confidence.
+
+**Dials unchanged:** kappa and xi were left at their script values for the same reasons as before: the picks come from small boxes where kappa barely moves them, and five functions improved under this approach.
+
+**Documents and figures refreshed:** The README, model card, datasheet and figures now run to Week 9. The prediction-error check covers 23 GP predictions, 48% of them within one standard deviation.
+
+**Model choice per function (Week 10 queries):**
+
+- F1: Probe, `[0.576552, 0.564941]`. The sign flip shows the structure is finer than my step, so this steps back by 0.006 in x1 to give a third point along x1.
+- F2: Exploit GP, `[0.702383, 0.911806]`. The peak is narrow (x2 = 0.912 gave 0.667, while 0.901 gave 0.542), so I am probing x1 only, with x2 held at the best value. Predicted 0.596 (std 0.071).
+- F3: Exploit GP, `[0.382075, 0.373632, 0.475388]`. Continues the trend towards lower x1 and x2. Predicted +0.0015 (std 0.0087).
+- F4: Halved step, `[0.341831, 0.406285, 0.414319, 0.402967]`. The gain is fading, so I halve the last step. No usable GP prediction.
+- F5: Exploit GP, `[0.385328, 0.914392, 1.000000, 1.000000]`. Continues the climb towards higher x1 and x2. Predicted 3491.8 (std 21.6).
+- F6: Halved step, `[0.443902, 0.374621, 0.630402, 0.785634, 0.146783]`. The last step failed, and the GP only proposes points next to it, so I halve the step that worked earlier. No usable GP prediction.
+- F7: Exploit GP, `[0.000000, 0.190343, 0.312125, 0.219162, 0.339982, 0.712002]`. Continues the trend. Predicted 2.4005 (std 0.025). The first input reaches the lower limit of 0.
+- F8: Exploit GP, `[0.235938, 0.086039, 0.079257, 0.113212, 0.959261, 0.496497, 0.186807, 0.647764]`. Continues the steady climb. Predicted 9.9451 (std 0.0138).
+
 ## Week 9 - Model & Pipeline Changes
 
 **Week 8 results against predictions:** All eight functions set a new best for the first time: F1 (2.30e-5, up from 1.91e-6), F2 (0.6670, up from 0.6112), F3 (-0.0124, up from -0.0150), F4 (0.6082, up from 0.3675), F5 (3174.8, up from 2986.9), F6 (-0.1036, up from -0.1902), F7 (2.2010, up from 2.0242) and F8 (9.9100, up from 9.8928). Five picks beat their prediction, F3 landed on it, and F8 was marginally under (9.910 against 9.920) while still improving. F6 beat its prediction by 5 standard deviations and F5 by 2.8, so the models are being too cautious about these peaks.
