@@ -32,12 +32,25 @@ I used **Bayesian optimisation**: fit a model to the points so far, then use it 
 - **Random Forest** surrogate (200 trees), added as a second opinion. Its uncertainty is the spread of the individual trees' predictions. I chose it because it is far less sensitive to extreme output scales and rough landscapes.
 - **Acquisition functions** (UCB and Expected Improvement) turn those predictions into a score for each candidate point, and the highest score is queried next.
 - **Extra safeguards and methods added along the way:**
-  - A duplicate-query safeguard, so no point within 0.001 of an earlier one can be chosen.
-  - A local search in a small box around the best point (used for F3 and F4).
-  - Log-space models for F1, and a small-step pattern search once F1's models stopped helping.
-  - In the final rounds, exploiting around each best point (highest predicted value within a ±0.02 box).
+  - A duplicate-query safeguard, so no point within 0.001 of an earlier one can be chosen. I added it because F1's Week 4 query was an exact repeat of Week 3's, which gave no new information.
+  - A local search in a small box around the best point (used for F3 and F4), because the global search kept choosing far-off points that the models themselves predicted to be poor.
+  - Log-space models for F1, because its outputs range from 1e-245 to 1e-3 and the raw models could not tell the points apart. When the models still gave no usable signal for F1, I switched to a small-step pattern search.
+  - In the final rounds, exploiting around each best point (highest predicted value within a ±0.02 box), because several functions had dropped sharply when they moved away from their best.
 
-The model card (`model_card.md`) has the details, limitations and trade-offs.
+The model card (`model_card.md`) has the details, limitations and trade-offs. The section below gives the evidence behind each choice.
+
+## KEY DECISIONS AND WHY
+Each decision below comes with the evidence and what it cost. The week is when the change was made. The full reasoning for every weekly query is in `CHANGELOG.md`.
+
+- **Week 6: added a Random Forest as a second surrogate.** I had only used a GP. For F1 the GP kept returning to the same flat corners whatever the kernel or kappa. For F5 it had no signal far from the data (mean 0, std 316), while the Random Forest's prediction of 2478.8 landed near my best known point. The cost was that the Random Forest extrapolated noise for F4 (mean -6.65, std 8.71, against observed values of -1.28 to 0.37), so I ignored it there.
+- **Week 6: excluded any candidate within 0.001 of a sampled point.** F1's Week 4 query was an exact repeat of Week 3's, because UCB and EI kept proposing known points and I followed them. A repeat gives no new information. Four earlier repeated rows remain in the data.
+- **Week 7: modelled F1 on the log of its absolute output.** F1's outputs range from 1e-245 to 1e-3, so squared error treats everything near zero as identical and the raw models could not see a gradient. In log terms there is a clear one. The cost is that the sign is dropped, so this finds the active region and not the exact peak.
+- **Week 7: searched a small box around the best point for F3 and F4.** The global search chose far-off points that the models themselves predicted to be poor (F4's GP predicted -13 against a best of 0.3675), because uncertainty is highest where there is no data. This refines a known peak and cannot find a different one.
+- **Week 8: exploited around each best point (±0.02 box, highest predicted value).** Most functions now had an established best region. I chose small steps because F2, F4 and F7 had all dropped sharply when they moved away from their best. It risks settling on a local peak, but all eight functions set a new best in the following round.
+- **Week 8: refitted the GPs with a length-scale floor of 0.05 and normalised outputs.** The previous fits for F2 and F5 collapsed into spiky kernels (length scales of 0.0085 and 1e-5) that made local predictions meaningless. The floor stops the model fitting very sharp features if they are real.
+- **Week 8: switched F1 to a pattern search (small steps from the best point).** A GP failed, and a single-Gaussian-bump model failed a hold-out test: without the newest point it predicted 1e-31 for a value that was actually about 1e-5.7. F1's outputs are exact, so measuring the direction of improvement directly is reliable. It takes about three weeks, since only one query per week is allowed, but it produced a 12x gain in one week.
+- **Week 9: left kappa and xi unchanged.** In a ±0.02 box, moving kappa from 0 to 2 shifted most picks by under 0.03 and cost a few percent of predicted value. F4 did not move at all. Box size mattered more, and every function was improving. If a function stalls for about two weeks, I will widen the box to ±0.04 to ±0.08 and add a small kappa.
+- **Weeks 10 to 12: used line searches and half steps for F4 and F6, and an anisotropic GP for F4.** The GP's picks sat next to a failed point or predicted nothing above the best, so where a step stopped working I halved it or fitted a curve along it. Once F4's line was used up, a GP with a length scale for each input predicted the last three points better than the plain one (errors of 0.14, 0.49 and 0.50 against 0.83, 0.59 and 0.57) and showed that x1 and x2 matter most. These picks are low confidence, and the anisotropic GP was overconfident on one of the three points (5.9 standard deviations).
 
 ## HYPERPARAMETER OPTIMSATION
 | Function | Kernel (starting length scale) | UCB kappa | EI xi |
