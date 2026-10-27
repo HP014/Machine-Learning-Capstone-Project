@@ -8,18 +8,18 @@
 ## Composition
 
 - **What do the instances represent?** Each instance is one evaluation of one function: an input vector of 2 to 8 numbers between 0 and 1, and the scalar output it returned.
-- **How many instances are there?** 255 in total, split across eight functions:
+- **How many instances are there?** 263 in total, split across eight functions:
 
-| Function | Inputs | Initial points | Points after Week 10 |
+| Function | Inputs | Initial points | Points after Week 11 |
 |---|---|---|---|
-| F1 | 2 | 10 | 20 |
-| F2 | 2 | 10 | 20 |
-| F3 | 3 | 15 | 25 |
-| F4 | 4 | 30 | 40 |
-| F5 | 4 | 20 | 30 |
-| F6 | 5 | 20 | 30 |
-| F7 | 6 | 30 | 40 |
-| F8 | 8 | 40 | 50 |
+| F1 | 2 | 10 | 21 |
+| F2 | 2 | 10 | 21 |
+| F3 | 3 | 15 | 26 |
+| F4 | 4 | 30 | 41 |
+| F5 | 4 | 20 | 31 |
+| F6 | 5 | 20 | 31 |
+| F7 | 6 | 30 | 41 |
+| F8 | 8 | 40 | 51 |
 
 - **Is there any missing data?** No. Every query returned an output. Four rows are repeats of an earlier query (one in F1, one in F4, two in F5).
 - **Is there confidential data?** None that I know of. The data is purely numeric, with no personal information.
@@ -28,7 +28,7 @@
 
 - **How was the data acquired?** The initial points for each function were provided at the start `[CONFIRM: how the initial points were generated and supplied]`. After that, each week I submitted one new input per function and received its output.
 - **Sampling strategy:** The initial points were supplied. Later points were chosen by me using Bayesian optimisation, so they concentrate in regions that looked promising and are not a uniform sample.
-- **Time frame:** Ten weekly rounds, from about August to October 2026.
+- **Time frame:** Eleven weekly rounds, from about August to October 2026.
 
 ## Preprocessing/cleaning/labelling
 

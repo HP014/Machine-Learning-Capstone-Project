@@ -104,7 +104,7 @@ ax.scatter(X1[neg, 0], X1[neg, 1], c=mag[neg], cmap="viridis", s=110, marker="v"
 ax.scatter(X1[zero, 0], X1[zero, 1], c="dimgrey", s=70, marker="x", label="exactly zero")
 b = np.argmax(y1)
 ax.scatter(X1[b, 0], X1[b, 1], s=420, facecolor="none", edgecolor="#D55E00", lw=2.5, label="current best")
-ax.annotate("current best\n(2.3e-5)", X1[b], textcoords="offset points", xytext=(-95, -42), fontsize=9,
+ax.annotate("current best\n(1.4e-4)", X1[b], textcoords="offset points", xytext=(-95, -42), fontsize=9,
             arrowprops=dict(arrowstyle="->", color="#D55E00"))
 big_neg = np.argmin(y1)
 ax.annotate(f"large negative spike\n({y1[big_neg]:.1e})", X1[big_neg], textcoords="offset points", xytext=(45, 90),
@@ -140,6 +140,8 @@ PRED = [
     (10, 2, "GP", 0.596100, 0.070500, 0.630413), (10, 3, "GP", 0.001500, 0.008700, -0.014070),
     (10, 5, "GP", 3491.758800, 21.554800, 3532.851177), (10, 7, "GP", 2.400500, 0.025000, 2.464515),
     (10, 8, "GP", 9.945100, 0.013800, 9.936602),
+    (11, 3, "GP", -0.004000, 0.008600, -0.012375), (11, 5, "GP", 3742.100000, 5.000000, 3747.600069),
+    (11, 7, "GP", 2.533300, 0.040000, 2.598802), (11, 8, "GP", 9.952800, 0.010300, 9.948881),
 ]
 with open(ROOT / "results" / "prediction_log.csv", "w", newline="") as fh:
     wr = csv.writer(fh)
@@ -148,8 +150,8 @@ with open(ROOT / "results" / "prediction_log.csv", "w", newline="") as fh:
         wr.writerow([wk, f, m, mu, sd, act, round((act - mu) / sd, 3)])
 
 fig, ax = plt.subplots(figsize=(10, 5.5), constrained_layout=True)
-wk_color = {6: "#56B4E9", 7: "#E69F00", 8: "#009E73", 9: "#CC79A7", 10: "#D55E00"}
-offset = {6: -0.32, 7: -0.16, 8: 0.0, 9: 0.16, 10: 0.32}
+wk_color = {6: "#56B4E9", 7: "#E69F00", 8: "#009E73", 9: "#CC79A7", 10: "#D55E00", 11: "#0072B2"}
+offset = {6: -0.35, 7: -0.21, 8: -0.07, 9: 0.07, 10: 0.21, 11: 0.35}
 for wk, f, m, mu, sd, act in PRED:
     if f == 1:
         continue
@@ -162,7 +164,7 @@ ax.set_xticks(range(2, 9))
 ax.set_xticklabels([f"F{f}" for f in range(2, 9)])
 ax.set_ylabel("(actual - predicted) / predicted std")
 ax.set_title("Prediction error in standard deviations (shaded band = within 1 std)", fontweight="bold")
-handles = [plt.Line2D([], [], marker="o", ls="", color=wk_color[w], markeredgecolor="black", label=f"Week {w} result") for w in (6, 7, 8, 9, 10)]
+handles = [plt.Line2D([], [], marker="o", ls="", color=wk_color[w], markeredgecolor="black", label=f"Week {w} result") for w in (6, 7, 8, 9, 10, 11)]
 handles += [plt.Line2D([], [], marker="o", ls="", color="white", markeredgecolor="black", label="GP pick"),
             plt.Line2D([], [], marker="s", ls="", color="white", markeredgecolor="black", label="RF pick")]
 ax.legend(handles=handles, frameon=False, ncol=2, loc="lower right")
