@@ -866,7 +866,7 @@ ei_1 = expected_improvement(mean_f1, std_f1, y_best_1, xi=0.1)
 best_ei_idx_1 = np.argmax(np.where(valid_1, ei_1, -np.inf))
 next_point_ei_1 = candidates_f1[best_ei_idx_1]
 
-print(f"UCB (κ=0.5):")
+print(f"UCB:")
 print(f"  Next point: {next_point_ucb_1[0]:.6f}-{next_point_ucb_1[1]:.6f}")
 print(f"  UCB value: {ucb_1[best_ucb_idx_1]:.6f}")
 print(f"  Mean: {mean_f1[best_ucb_idx_1]:.6f}")
@@ -887,7 +887,7 @@ ei_1_rf = expected_improvement(mean_f1_rf, std_f1_rf, y_best_1, xi=0.1)
 best_ei_idx_1_rf = np.argmax(np.where(valid_1, ei_1_rf, -np.inf))
 next_point_ei_1_rf = candidates_f1[best_ei_idx_1_rf]
 
-print(f"\n[Random Forest] UCB (κ=0.1):")
+print(f"\n[Random Forest] UCB:")
 print(f"  Next point: {next_point_ucb_1_rf[0]:.6f}-{next_point_ucb_1_rf[1]:.6f}")
 print(f"  UCB value: {ucb_1_rf[best_ucb_idx_1_rf]:.6f}")
 print(f"  Mean: {mean_f1_rf[best_ucb_idx_1_rf]:.6f}")
@@ -920,7 +920,7 @@ ei_1_rf_log = expected_improvement(mean_f1_rf_log, std_f1_rf_log, z_best_1, xi=0
 best_ei_idx_1_rf_log = np.argmax(np.where(valid_1, ei_1_rf_log, -np.inf))
 next_point_ei_1_rf_log = candidates_f1[best_ei_idx_1_rf_log]
 
-print(f"\n[Log-space GP] UCB (κ=1.5), best observed log10|y|={z_best_1:.6f}:")
+print(f"\n[Log-space GP] UCB, best observed log10|y|={z_best_1:.6f}:")
 print(f"  Next point: {next_point_ucb_1_log[0]:.6f}-{next_point_ucb_1_log[1]:.6f}")
 print(f"  Predicted log10|y|: {mean_f1_log[best_ucb_idx_1_log]:.6f}  Std: {std_f1_log[best_ucb_idx_1_log]:.6f}")
 
@@ -929,7 +929,7 @@ print(f"  Next point: {next_point_ei_1_log[0]:.6f}-{next_point_ei_1_log[1]:.6f}"
 print(f"  EI value: {ei_1_log[best_ei_idx_1_log]:.6f}")
 print(f"  Predicted log10|y|: {mean_f1_log[best_ei_idx_1_log]:.6f}  Std: {std_f1_log[best_ei_idx_1_log]:.6f}")
 
-print(f"\n[Log-space RF] UCB (κ=1.5):")
+print(f"\n[Log-space RF] UCB:")
 print(f"  Next point: {next_point_ucb_1_rf_log[0]:.6f}-{next_point_ucb_1_rf_log[1]:.6f}")
 print(f"  Predicted log10|y|: {mean_f1_rf_log[best_ucb_idx_1_rf_log]:.6f}  Std: {std_f1_rf_log[best_ucb_idx_1_rf_log]:.6f}")
 
@@ -963,7 +963,7 @@ ei_2 = expected_improvement(mean_f2, std_f2, y_best_2, xi=0.1)
 best_ei_idx_2 = np.argmax(np.where(valid_2, ei_2, -np.inf))
 next_point_ei_2 = candidates_f2[best_ei_idx_2]
 
-print(f"UCB (κ=2.0):")
+print(f"UCB:")
 print(f"  Next point: {next_point_ucb_2[0]:.6f}-{next_point_ucb_2[1]:.6f}")
 print(f"  UCB value: {ucb_2[best_ucb_idx_2]:.6f}")
 print(f"  Mean: {mean_f2[best_ucb_idx_2]:.6f}")
@@ -984,7 +984,7 @@ ei_2_rf = expected_improvement(mean_f2_rf, std_f2_rf, y_best_2, xi=0.1)
 best_ei_idx_2_rf = np.argmax(np.where(valid_2, ei_2_rf, -np.inf))
 next_point_ei_2_rf = candidates_f2[best_ei_idx_2_rf]
 
-print(f"\n[Random Forest] UCB (κ=2.0):")
+print(f"\n[Random Forest] UCB:")
 print(f"  Next point: {next_point_ucb_2_rf[0]:.6f}-{next_point_ucb_2_rf[1]:.6f}")
 print(f"  UCB value: {ucb_2_rf[best_ucb_idx_2_rf]:.6f}")
 print(f"  Mean: {mean_f2_rf[best_ucb_idx_2_rf]:.6f}")
@@ -1019,7 +1019,7 @@ ei_3 = expected_improvement(mean_f3, std_f3, y_best_3, xi=0.01)
 best_ei_idx_3 = np.argmax(np.where(valid_3, ei_3, -np.inf))
 next_point_ei_3 = candidates_f3[best_ei_idx_3]
 
-print(f"UCB (κ=1.5):")
+print(f"UCB:")
 print(f"  Next point: {next_point_ucb_3[0]:.6f}-{next_point_ucb_3[1]:.6f}-{next_point_ucb_3[2]:.6f}")
 print(f"  UCB value: {ucb_3[best_ucb_idx_3]:.6f}")
 print(f"  Mean: {mean_f3[best_ucb_idx_3]:.6f}")
@@ -1040,7 +1040,7 @@ ei_3_rf = expected_improvement(mean_f3_rf, std_f3_rf, y_best_3, xi=0.01)
 best_ei_idx_3_rf = np.argmax(np.where(valid_3, ei_3_rf, -np.inf))
 next_point_ei_3_rf = candidates_f3[best_ei_idx_3_rf]
 
-print(f"\n[Random Forest] UCB (κ=1.5):")
+print(f"\n[Random Forest] UCB:")
 print(f"  Next point: {next_point_ucb_3_rf[0]:.6f}-{next_point_ucb_3_rf[1]:.6f}-{next_point_ucb_3_rf[2]:.6f}")
 print(f"  UCB value: {ucb_3_rf[best_ucb_idx_3_rf]:.6f}")
 print(f"  Mean: {mean_f3_rf[best_ucb_idx_3_rf]:.6f}")
@@ -1101,7 +1101,7 @@ ei_4 = expected_improvement(mean_f4, std_f4, y_best_4, xi=0.01)
 best_ei_idx_4 = np.argmax(np.where(valid_4, ei_4, -np.inf))
 next_point_ei_4 = candidates_f4[best_ei_idx_4]
 
-print(f"UCB (κ=1.5):")
+print(f"UCB:")
 print(f"  Next point: {next_point_ucb_4[0]:.6f}-{next_point_ucb_4[1]:.6f}-{next_point_ucb_4[2]:.6f}-{next_point_ucb_4[3]:.6f}")
 print(f"  UCB value: {ucb_4[best_ucb_idx_4]:.6f}")
 print(f"  Mean: {mean_f4[best_ucb_idx_4]:.6f}")
@@ -1122,7 +1122,7 @@ ei_4_rf = expected_improvement(mean_f4_rf, std_f4_rf, y_best_4, xi=0.01)
 best_ei_idx_4_rf = np.argmax(np.where(valid_4, ei_4_rf, -np.inf))
 next_point_ei_4_rf = candidates_f4[best_ei_idx_4_rf]
 
-print(f"\n[Random Forest] UCB (κ=1.5):")
+print(f"\n[Random Forest] UCB:")
 print(f"  Next point: {next_point_ucb_4_rf[0]:.6f}-{next_point_ucb_4_rf[1]:.6f}-{next_point_ucb_4_rf[2]:.6f}-{next_point_ucb_4_rf[3]:.6f}")
 print(f"  UCB value: {ucb_4_rf[best_ucb_idx_4_rf]:.6f}")
 print(f"  Mean: {mean_f4_rf[best_ucb_idx_4_rf]:.6f}")
@@ -1182,7 +1182,7 @@ ei_5 = expected_improvement(mean_f5, std_f5, y_best_5, xi=0.01)
 best_ei_idx_5 = np.argmax(np.where(valid_5, ei_5, -np.inf))
 next_point_ei_5 = candidates_f5[best_ei_idx_5]
 
-print(f"UCB (κ=1.5):")
+print(f"UCB:")
 print(f"  Next point: {next_point_ucb_5[0]:.6f}-{next_point_ucb_5[1]:.6f}-{next_point_ucb_5[2]:.6f}-{next_point_ucb_5[3]:.6f}")
 print(f"  UCB value: {ucb_5[best_ucb_idx_5]:.6f}")
 print(f"  Mean: {mean_f5[best_ucb_idx_5]:.6f}")
@@ -1203,7 +1203,7 @@ ei_5_rf = expected_improvement(mean_f5_rf, std_f5_rf, y_best_5, xi=0.01)
 best_ei_idx_5_rf = np.argmax(np.where(valid_5, ei_5_rf, -np.inf))
 next_point_ei_5_rf = candidates_f5[best_ei_idx_5_rf]
 
-print(f"\n[Random Forest] UCB (κ=1.5):")
+print(f"\n[Random Forest] UCB:")
 print(f"  Next point: {next_point_ucb_5_rf[0]:.6f}-{next_point_ucb_5_rf[1]:.6f}-{next_point_ucb_5_rf[2]:.6f}-{next_point_ucb_5_rf[3]:.6f}")
 print(f"  UCB value: {ucb_5_rf[best_ucb_idx_5_rf]:.6f}")
 print(f"  Mean: {mean_f5_rf[best_ucb_idx_5_rf]:.6f}")
@@ -1238,7 +1238,7 @@ ei_6 = expected_improvement(mean_f6, std_f6, y_best_6, xi=0.01)
 best_ei_idx_6 = np.argmax(np.where(valid_6, ei_6, -np.inf))
 next_point_ei_6 = candidates_f6[best_ei_idx_6]
 
-print(f"UCB (κ=2.5):")
+print(f"UCB:")
 print(f"  Next point: {next_point_ucb_6[0]:.6f}-{next_point_ucb_6[1]:.6f}-{next_point_ucb_6[2]:.6f}-{next_point_ucb_6[3]:.6f}-{next_point_ucb_6[4]:.6f}")
 print(f"  UCB value: {ucb_6[best_ucb_idx_6]:.6f}")
 print(f"  Mean: {mean_f6[best_ucb_idx_6]:.6f}")
@@ -1259,7 +1259,7 @@ ei_6_rf = expected_improvement(mean_f6_rf, std_f6_rf, y_best_6, xi=0.01)
 best_ei_idx_6_rf = np.argmax(np.where(valid_6, ei_6_rf, -np.inf))
 next_point_ei_6_rf = candidates_f6[best_ei_idx_6_rf]
 
-print(f"\n[Random Forest] UCB (κ=2.5):")
+print(f"\n[Random Forest] UCB:")
 print(f"  Next point: {next_point_ucb_6_rf[0]:.6f}-{next_point_ucb_6_rf[1]:.6f}-{next_point_ucb_6_rf[2]:.6f}-{next_point_ucb_6_rf[3]:.6f}-{next_point_ucb_6_rf[4]:.6f}")
 print(f"  UCB value: {ucb_6_rf[best_ucb_idx_6_rf]:.6f}")
 print(f"  Mean: {mean_f6_rf[best_ucb_idx_6_rf]:.6f}")
@@ -1294,7 +1294,7 @@ ei_7 = expected_improvement(mean_f7, std_f7, y_best_7, xi=0.01)
 best_ei_idx_7 = np.argmax(np.where(valid_7, ei_7, -np.inf))
 next_point_ei_7 = candidates_f7[best_ei_idx_7]
 
-print(f"UCB (κ=1.7):")
+print(f"UCB:")
 print(f"  Next point: {next_point_ucb_7[0]:.6f}-{next_point_ucb_7[1]:.6f}-{next_point_ucb_7[2]:.6f}-{next_point_ucb_7[3]:.6f}-{next_point_ucb_7[4]:.6f}-{next_point_ucb_7[5]:.6f}")
 print(f"  UCB value: {ucb_7[best_ucb_idx_7]:.6f}")
 print(f"  Mean: {mean_f7[best_ucb_idx_7]:.6f}")
@@ -1315,7 +1315,7 @@ ei_7_rf = expected_improvement(mean_f7_rf, std_f7_rf, y_best_7, xi=0.01)
 best_ei_idx_7_rf = np.argmax(np.where(valid_7, ei_7_rf, -np.inf))
 next_point_ei_7_rf = candidates_f7[best_ei_idx_7_rf]
 
-print(f"\n[Random Forest] UCB (κ=1.7):")
+print(f"\n[Random Forest] UCB:")
 print(f"  Next point: {next_point_ucb_7_rf[0]:.6f}-{next_point_ucb_7_rf[1]:.6f}-{next_point_ucb_7_rf[2]:.6f}-{next_point_ucb_7_rf[3]:.6f}-{next_point_ucb_7_rf[4]:.6f}-{next_point_ucb_7_rf[5]:.6f}")
 print(f"  UCB value: {ucb_7_rf[best_ucb_idx_7_rf]:.6f}")
 print(f"  Mean: {mean_f7_rf[best_ucb_idx_7_rf]:.6f}")
@@ -1350,7 +1350,7 @@ ei_8 = expected_improvement(mean_f8, std_f8, y_best_8, xi=0.02)
 best_ei_idx_8 = np.argmax(np.where(valid_8, ei_8, -np.inf))
 next_point_ei_8 = candidates_f8[best_ei_idx_8]
 
-print(f"UCB (κ=3.0):")
+print(f"UCB:")
 print(f"  Next point: {next_point_ucb_8[0]:.6f}-{next_point_ucb_8[1]:.6f}-{next_point_ucb_8[2]:.6f}-{next_point_ucb_8[3]:.6f}-{next_point_ucb_8[4]:.6f}-{next_point_ucb_8[5]:.6f}-{next_point_ucb_8[6]:.6f}-{next_point_ucb_8[7]:.6f}")
 print(f"  UCB value: {ucb_8[best_ucb_idx_8]:.6f}")
 print(f"  Mean: {mean_f8[best_ucb_idx_8]:.6f}")
@@ -1371,7 +1371,7 @@ ei_8_rf = expected_improvement(mean_f8_rf, std_f8_rf, y_best_8, xi=0.02)
 best_ei_idx_8_rf = np.argmax(np.where(valid_8, ei_8_rf, -np.inf))
 next_point_ei_8_rf = candidates_f8[best_ei_idx_8_rf]
 
-print(f"\n[Random Forest] UCB (κ=3.0):")
+print(f"\n[Random Forest] UCB:")
 print(f"  Next point: {next_point_ucb_8_rf[0]:.6f}-{next_point_ucb_8_rf[1]:.6f}-{next_point_ucb_8_rf[2]:.6f}-{next_point_ucb_8_rf[3]:.6f}-{next_point_ucb_8_rf[4]:.6f}-{next_point_ucb_8_rf[5]:.6f}-{next_point_ucb_8_rf[6]:.6f}-{next_point_ucb_8_rf[7]:.6f}")
 print(f"  UCB value: {ucb_8_rf[best_ucb_idx_8_rf]:.6f}")
 print(f"  Mean: {mean_f8_rf[best_ucb_idx_8_rf]:.6f}")
