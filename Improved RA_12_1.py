@@ -843,6 +843,7 @@ plt.show()
 # Each candidate is scored with UCB (mean + kappa * std, which favours uncertain points, so it explores)
 # and EI (expected gain over the best value so far, which is more cautious). The highest score among
 # the valid candidates is the proposed next point. When UCB and EI agree, the pick is more trustworthy.
+# kappa and xi are set per function; the README table has the values and the reasons.
 # =============================================================================
 
 print("\n" + "="*60)
@@ -856,7 +857,7 @@ y_best_1 = func1_outputs.max()
 # a point you already have. Added in Week 6 after F1, F4 and F5 repeated points in Weeks 3 and 4.
 valid_1 = unsampled_mask(candidates_f1, func1_inputs)
 
-# UCB, raw F1 models: kappa=0.1 and xi=0.1 (reason not recorded)
+# UCB, raw F1 models: the reason for the kappa and xi values is not recorded
 ucb_1 = upper_confidence_bound(mean_f1, std_f1, kappa=0.1)
 best_ucb_idx_1 = np.argmax(np.where(valid_1, ucb_1, -np.inf))
 next_point_ucb_1 = candidates_f1[best_ucb_idx_1]
@@ -902,8 +903,8 @@ print(f"  Std: {std_f1_rf[best_ei_idx_1_rf]:.6f}")
 # Log-space acquisition (all values are in log10|y| units)
 z_best_1 = z1.max()
 
-# Log-space models, which are the ones used for F1 from Week 7: kappa=1.5 (the starting rule for 2D
-# functions) and the default xi=0.01
+# Log-space models, which are the ones used for F1 from Week 7: kappa follows the starting rule for 2D
+# functions and xi is the default
 ucb_1_log = upper_confidence_bound(mean_f1_log, std_f1_log, kappa=1.5)
 best_ucb_idx_1_log = np.argmax(np.where(valid_1, ucb_1_log, -np.inf))
 next_point_ucb_1_log = candidates_f1[best_ucb_idx_1_log]
@@ -954,7 +955,7 @@ y_best_2 = func2_outputs.max()
 # a point you already have. Added in Week 6 after F1, F4 and F5 repeated points in Weeks 3 and 4.
 valid_2 = unsampled_mask(candidates_f2, func2_inputs)
 
-# kappa=2.0, xi=0.1: kept at 2.0 to keep exploring, as F2 never beat its starting 0.6112 in Weeks 1 to 5
+# kappa and xi: kept high to keep exploring, as F2 never beat its starting 0.6112 in Weeks 1 to 5
 ucb_2 = upper_confidence_bound(mean_f2, std_f2, kappa=2.0)
 best_ucb_idx_2 = np.argmax(np.where(valid_2, ucb_2, -np.inf))
 next_point_ucb_2 = candidates_f2[best_ucb_idx_2]
@@ -1010,7 +1011,7 @@ y_best_3 = func3_outputs.max()
 # a point you already have. Added in Week 6 after F1, F4 and F5 repeated points in Weeks 3 and 4.
 valid_3 = unsampled_mask(candidates_f3, func3_inputs)
 
-# kappa=1.5, xi=0.01: lowered from the starting rule of 2.0 to focus on a proposed maximum
+# kappa and xi: kappa lowered from the starting rule to focus on a proposed maximum
 ucb_3 = upper_confidence_bound(mean_f3, std_f3, kappa=1.5)
 best_ucb_idx_3 = np.argmax(np.where(valid_3, ucb_3, -np.inf))
 next_point_ucb_3 = candidates_f3[best_ucb_idx_3]
@@ -1092,7 +1093,7 @@ y_best_4 = func4_outputs.max()
 # a point you already have. Added in Week 6 after F1, F4 and F5 repeated points in Weeks 3 and 4.
 valid_4 = unsampled_mask(candidates_f4, func4_inputs)
 
-# kappa=1.5, xi=0.01: lowered from the starting rule of 2.0 to focus on a proposed maximum
+# kappa and xi: kappa lowered from the starting rule to focus on a proposed maximum
 ucb_4 = upper_confidence_bound(mean_f4, std_f4, kappa=1.5)
 best_ucb_idx_4 = np.argmax(np.where(valid_4, ucb_4, -np.inf))
 next_point_ucb_4 = candidates_f4[best_ucb_idx_4]
@@ -1173,7 +1174,7 @@ y_best_5 = func5_outputs.max()
 # a point you already have. Added in Week 6 after F1, F4 and F5 repeated points in Weeks 3 and 4.
 valid_5 = unsampled_mask(candidates_f5, func5_inputs)
 
-# kappa=1.5, xi=0.01: lowered from the starting rule of 2.0 to focus on its Week 1 peak
+# kappa and xi: kappa lowered from the starting rule to focus on its Week 1 peak
 ucb_5 = upper_confidence_bound(mean_f5, std_f5, kappa=1.5)
 best_ucb_idx_5 = np.argmax(np.where(valid_5, ucb_5, -np.inf))
 next_point_ucb_5 = candidates_f5[best_ucb_idx_5]
@@ -1229,7 +1230,7 @@ y_best_6 = func6_outputs.max()
 # a point you already have. Added in Week 6 after F1, F4 and F5 repeated points in Weeks 3 and 4.
 valid_6 = unsampled_mask(candidates_f6, func6_inputs)
 
-# kappa=2.5, xi=0.01: the starting rule for 5D, kept
+# kappa and xi: kappa follows the starting rule for 5D
 ucb_6 = upper_confidence_bound(mean_f6, std_f6, kappa=2.5)
 best_ucb_idx_6 = np.argmax(np.where(valid_6, ucb_6, -np.inf))
 next_point_ucb_6 = candidates_f6[best_ucb_idx_6]
@@ -1285,7 +1286,7 @@ y_best_7 = func7_outputs.max()
 # a point you already have. Added in Week 6 after F1, F4 and F5 repeated points in Weeks 3 and 4.
 valid_7 = unsampled_mask(candidates_f7, func7_inputs)
 
-# kappa=1.7, xi=0.01: lowered from the starting rule of 2.5 to focus on a proposed maximum near a new best
+# kappa and xi: kappa lowered from the starting rule to focus on a proposed maximum near a new best
 ucb_7 = upper_confidence_bound(mean_f7, std_f7, kappa=1.7)
 best_ucb_idx_7 = np.argmax(np.where(valid_7, ucb_7, -np.inf))
 next_point_ucb_7 = candidates_f7[best_ucb_idx_7]
@@ -1341,7 +1342,7 @@ y_best_8 = func8_outputs.max()
 # a point you already have. Added in Week 6 after F1, F4 and F5 repeated points in Weeks 3 and 4.
 valid_8 = unsampled_mask(candidates_f8, func8_inputs)
 
-# kappa=3.0, xi=0.02: reason not recorded
+# kappa and xi: the reason for these values is not recorded
 ucb_8 = upper_confidence_bound(mean_f8, std_f8, kappa=3.0)
 best_ucb_idx_8 = np.argmax(np.where(valid_8, ucb_8, -np.inf))
 next_point_ucb_8 = candidates_f8[best_ucb_idx_8]
