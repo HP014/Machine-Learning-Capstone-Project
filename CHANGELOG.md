@@ -1,5 +1,41 @@
 # Changelog
 
+## Week 13 - Model & Pipeline Changes
+
+**Week 12 results against predictions:** Four functions set a new best: F5 (3984.7, up from 3747.6), F6 (-0.0575, up from -0.0916), F7 (2.7158, up from 2.5988) and F8 (9.9634, up from 9.9489). F1, F2, F3 and F4 did not improve. F5 beat its prediction by 2.4 standard deviations, F7 and F8 landed within one, and F4 missed by 2.8 below.
+
+- F1: step +0.012 in x2, predicted about +2.2e-4 from a curve fit, actual -2.14e-4. The sign flipped. The best is unchanged at 1.43e-4.
+- F2: refinement point, actual 0.5498 (a loss of 0.117 for a move of 0.0028 in x2).
+- F3: diagonal probe, actual -0.0152 (a loss of 0.0098 over a distance of 0.014).
+- F4: anisotropic GP pick, predicted 0.797 (std 0.108), actual 0.4979.
+- F5: predicted 3976.3 (std 3.4), actual 3984.7.
+- F6: probe step, actual -0.0575 (a gain of 0.034).
+- F7: predicted 2.6968 (std 0.030), actual 2.7158.
+- F8: predicted 9.9621 (std 0.0091), actual 9.9634.
+
+**F1 steps back inside the stripe:** The output went from +1.43e-4 to -2.14e-4 as x2 rose from 0.5799 to 0.5919, so the top is between them or just below. A parabola through the last three points (and the GP) peaks at x2 = 0.5753, a cubic through the last four at 0.578, and the zero crossing is near 0.585 to 0.587. I take x2 = 0.577 and hold x1 at 0.5805. The expected gain is about 1.1x to 1.2x, and the confidence is low because x1 also changed between some of those points.
+
+**F2 and F3 look like narrow peaks:** For F2, raising x2 by 0.0028 lost 0.117, while the point at x2 = 0.9013 sits 0.125 lower, so the peak is below 0.9117. A curve through those three points puts it at 0.908 (with an optimistic predicted value of 0.72), so I take 0.9095. For F3, every move around the best has lost between 0.007 and 0.0098, whatever the distance (0.014 to 0.034), which looks like a narrow spike with a flat background of about -0.013 to -0.015. I probe within 0.006 of the best, changing x3 only, since a curve through the earlier x3 values peaked slightly below the best's x3. Low confidence.
+
+**F4 probes a new direction:** The anisotropic GP missed this week (2.8 standard deviations below), although it still predicted the point better than the plain GP (error 0.30 against 0.48). The loss of 0.159 is about what the curvature along F4's line predicts for a move of that size, so both the line and the direction I just tried are used up, and the GP now predicts nothing above the best. I step 0.01 along a direction at right angles to both, mostly x4 with a little x1 and x2. Low confidence.
+
+**F6 repeats the step that worked:** The 0.012 probe gained 0.034, and the GP's local predictions near the best have been wrong in direction on each recent test (it predicted -0.119 here), so I repeat the same step (x3 and x5 up, x4 slightly down).
+
+**Dials unchanged:** kappa and xi were left at their script values. The picks come from small boxes, and four functions improved.
+
+**Documents and figures refreshed:** The README, model card, datasheet and figures now run to Week 12. The prediction-error check covers 36 GP predictions, 47% of them within one standard deviation and 78% within two. The legend on the prediction-error figure moved below the plot because it was covering a point.
+
+**Model choice per function (Week 13 queries):**
+
+- F1: Step back inside the stripe, `[0.580530, 0.577000]`. The curve fits put the peak between x2 = 0.5753 and 0.578.
+- F2: Refinement, `[0.699500, 0.909500]`. A curve through the x2 profile peaks near 0.908. Low confidence.
+- F3: Single-input probe, `[0.401915, 0.392969, 0.449665]`. x3 down by 0.006, since the best looks like a narrow spike. Low confidence.
+- F4: Probe, `[0.361506, 0.417260, 0.411229, 0.408367]`. A new direction at right angles to the two used up. Low confidence.
+- F5: Exploit GP, `[0.443723, 0.974215, 1.000000, 1.000000]`. Predicted 4242.7. Its quoted uncertainty (std 3.7) is far too small, so treat it as a direction only.
+- F6: Repeated step, `[0.462932, 0.383449, 0.655245, 0.783097, 0.148552]`. The same step that gained 0.034 last week.
+- F7: Exploit GP, `[0.046509, 0.182924, 0.282867, 0.276940, 0.284300, 0.674593]`. Predicted 2.7661 (std 0.029).
+- F8: Exploit GP, `[0.177156, 0.134345, 0.109926, 0.135300, 0.935393, 0.535055, 0.174600, 0.640185]`. Predicted 9.9752 (std 0.0015). The GP's length scale sits at its upper bound, so it is modelling a near-linear trend. Read this as a direction.
+
 ## Week 12 - Model & Pipeline Changes
 
 **Week 11 results against predictions:** Six functions set a new best: F1 (1.43e-4, up from 2.30e-5), F4 (0.6566, up from 0.6169), F5 (3747.6, up from 3532.9), F6 (-0.0916, up from -0.1036), F7 (2.5988, up from 2.4645) and F8 (9.9489, up from 9.9366). F2 and F3 did not improve. F4's line-search prediction (about 0.645) was close, F5 and F8 landed within about one standard deviation, and F7 beat its prediction by 1.6 standard deviations.

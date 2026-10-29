@@ -23,29 +23,29 @@ np.random.seed(42)
 plt.style.use('seaborn-v0_8-darkgrid')  
 
 # Load the updated inputs and outputs for each function from the required week. Make sure to change path as required. 
-func1_inputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_1\\updated_inputs.npy')
-func1_outputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_1\\updated_outputs.npy')
+func1_inputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_1\\updated_inputs.npy')
+func1_outputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_1\\updated_outputs.npy')
 
-func2_inputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_2\\updated_inputs.npy')
-func2_outputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_2\\updated_outputs.npy')
+func2_inputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_2\\updated_inputs.npy')
+func2_outputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_2\\updated_outputs.npy')
 
-func3_inputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_3\\updated_inputs.npy')
-func3_outputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_3\\updated_outputs.npy')
+func3_inputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_3\\updated_inputs.npy')
+func3_outputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_3\\updated_outputs.npy')
 
-func4_inputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_4\\updated_inputs.npy')
-func4_outputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_4\\updated_outputs.npy')
+func4_inputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_4\\updated_inputs.npy')
+func4_outputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_4\\updated_outputs.npy')
 
-func5_inputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_5\\updated_inputs.npy')
-func5_outputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_5\\updated_outputs.npy')
+func5_inputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_5\\updated_inputs.npy')
+func5_outputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_5\\updated_outputs.npy')
 
-func6_inputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_6\\updated_inputs.npy')
-func6_outputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_6\\updated_outputs.npy')
+func6_inputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_6\\updated_inputs.npy')
+func6_outputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_6\\updated_outputs.npy')
 
-func7_inputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_7\\updated_inputs.npy')
-func7_outputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_7\\updated_outputs.npy')
+func7_inputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_7\\updated_inputs.npy')
+func7_outputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_7\\updated_outputs.npy')
 
-func8_inputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_8\\updated_inputs.npy')
-func8_outputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_8\\updated_outputs.npy')
+func8_inputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_8\\updated_inputs.npy')
+func8_outputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_8\\updated_outputs.npy')
 
 
 
@@ -99,39 +99,39 @@ for name, (inputs, outputs) in functions.items():
 """
 
 
-# Storing week 11 queries and outputs
-week11_queries = {
-    'func1': np.array([0.580530, 0.579941]),
-    'func2': np.array([0.696361, 0.911737]),
-    'func3': np.array([0.410917, 0.373592, 0.435732]),
-    'func4': np.array([0.360106, 0.415960, 0.412169, 0.398667]),
-    'func5': np.array([0.404793, 0.934333, 1.000000, 1.000000]),
-    'func6': np.array([0.451652, 0.382729, 0.642765, 0.786937, 0.131992]),
-    'func7': np.array([0.007862, 0.197102, 0.307793, 0.238998, 0.320152, 0.693900]),
-    'func8': np.array([0.216054, 0.104155, 0.098042, 0.102654, 0.971719, 0.510469, 0.172090, 0.660307])
+# Storing week 12 queries and outputs
+week12_queries = {
+    'func1': np.array([0.580530, 0.591941]),
+    'func2': np.array([0.699770, 0.914540]),
+    'func3': np.array([0.391915, 0.382969, 0.454500]),
+    'func4': np.array([0.363909, 0.403787, 0.432014, 0.401644]),
+    'func5': np.array([0.424258, 0.954274, 1.000000, 1.000000]),
+    'func6': np.array([0.457292, 0.383089, 0.649005, 0.785017, 0.140272]),
+    'func7': np.array([0.027362, 0.185569, 0.295060, 0.258313, 0.303215, 0.675226]),
+    'func8': np.array([0.196605, 0.119250, 0.103984, 0.118977, 0.953556, 0.522762, 0.173345, 0.650246])
 }
 
-week11_outputs = {
-    'func1': 0.0001427784847542806,
-    'func2': 0.6042389077960914,
-    'func3': -0.012375428951111486,
-    'func4': 0.6565639183203236,
-    'func5': 3747.600068509617,
-    'func6': -0.09156528293294898,
-    'func7': 2.598802183827364,
-    'func8': 9.9488806520686
+week12_outputs = {
+    'func1': -0.00021440595786431402,
+    'func2': 0.5498026765015063,
+    'func3': -0.015206428232510883,
+    'func4': 0.49785495925855416,
+    'func5': 3984.690348146703,
+    'func6': -0.057468790988922804,
+    'func7': 2.7157932683088357,
+    'func8': 9.9634151868394
 }
 
 print("\n" + "="*60)
-print("WEEK 11 QUERIES AND OUTPUTS")
+print("WEEK 12 QUERIES AND OUTPUTS")
 print("="*60)
 
-print("\nWeek 11 Queries:")
-for key, value in week11_queries.items():
+print("\nWeek 12 Queries:")
+for key, value in week12_queries.items():
     print(f"  {key}: {value}")
 
-print("\nWeek 11 Outputs:")
-for key, value in week11_outputs.items():
+print("\nWeek 12 Outputs:")
+for key, value in week12_outputs.items():
     print(f"  {key}: {value}")
 
 
@@ -149,8 +149,8 @@ print("FUNCTION 1: APPENDING NEW DATA")
 print("="*60)
 
 # APPENDING NEW DATA
-func1_inputs = np.vstack([func1_inputs, week11_queries['func1']])
-func1_outputs = np.append(func1_outputs, week11_outputs['func1'])
+func1_inputs = np.vstack([func1_inputs, week12_queries['func1']])
+func1_outputs = np.append(func1_outputs, week12_outputs['func1'])
 
 # AFTER APPENDING
 print(f"\nAFTER:")
@@ -162,10 +162,10 @@ print(f"  Last 3 inputs:\n{func1_inputs[-3:]}")
 
 # VERIFY
 print(f"\nVERIFY:")
-print(f"  Expected new input: {week11_queries['func1']}")
-print(f"  Match? {np.array_equal(func1_inputs[-1], week11_queries['func1'])}")
-print(f"  Expected new output: {week11_outputs['func1']}")
-print(f"  Match? {func1_outputs[-1] == week11_outputs['func1']}")
+print(f"  Expected new input: {week12_queries['func1']}")
+print(f"  Match? {np.array_equal(func1_inputs[-1], week12_queries['func1'])}")
+print(f"  Expected new output: {week12_outputs['func1']}")
+print(f"  Match? {func1_outputs[-1] == week12_outputs['func1']}")
 print(f"  Total points: {len(func1_outputs)}")
 
 # =============================================================================
@@ -176,8 +176,8 @@ print("\n" + "="*60)
 print("FUNCTION 2: APPENDING NEW DATA")
 print("="*60)
 # APPEND
-func2_inputs = np.vstack([func2_inputs, week11_queries['func2']])
-func2_outputs = np.append(func2_outputs, week11_outputs['func2'])
+func2_inputs = np.vstack([func2_inputs, week12_queries['func2']])
+func2_outputs = np.append(func2_outputs, week12_outputs['func2'])
 
 # AFTER APPENDING
 print(f"\nAFTER:")
@@ -189,10 +189,10 @@ print(f"  Last 3 inputs:\n{func2_inputs[-3:]}")
 
 # VERIFY
 print(f"\nVERIFY:")
-print(f"  Expected new input: {week11_queries['func2']}")
-print(f"  Match? {np.array_equal(func2_inputs[-1], week11_queries['func2'])}")
-print(f"  Expected new output: {week11_outputs['func2']}")
-print(f"  Match? {func2_outputs[-1] == week11_outputs['func2']}")
+print(f"  Expected new input: {week12_queries['func2']}")
+print(f"  Match? {np.array_equal(func2_inputs[-1], week12_queries['func2'])}")
+print(f"  Expected new output: {week12_outputs['func2']}")
+print(f"  Match? {func2_outputs[-1] == week12_outputs['func2']}")
 print(f"  Total points: {len(func2_outputs)}")
 
 
@@ -203,8 +203,8 @@ print("\n" + "="*60)
 print("FUNCTION 3: APPENDING NEW DATA")
 print("="*60)
 # APPEND
-func3_inputs = np.vstack([func3_inputs, week11_queries['func3']])
-func3_outputs = np.append(func3_outputs, week11_outputs['func3'])
+func3_inputs = np.vstack([func3_inputs, week12_queries['func3']])
+func3_outputs = np.append(func3_outputs, week12_outputs['func3'])
 
 # AFTER APPENDING
 print(f"\nAFTER:")
@@ -215,10 +215,10 @@ print(f"  New output: {func3_outputs[-1]}")
 
 # VERIFY
 print(f"\nVERIFY:")
-print(f"  Expected new input: {week11_queries['func3']}")
-print(f"  Match? {np.array_equal(func3_inputs[-1], week11_queries['func3'])}")
-print(f"  Expected new output: {week11_outputs['func3']}")
-print(f"  Match? {func3_outputs[-1] == week11_outputs['func3']}")
+print(f"  Expected new input: {week12_queries['func3']}")
+print(f"  Match? {np.array_equal(func3_inputs[-1], week12_queries['func3'])}")
+print(f"  Expected new output: {week12_outputs['func3']}")
+print(f"  Match? {func3_outputs[-1] == week12_outputs['func3']}")
 print(f"  Total points: {len(func3_outputs)}")
 
 # =============================================================================
@@ -229,8 +229,8 @@ print("FUNCTION 4: APPENDING NEW DATA")
 print("="*60)
 
 # APPEND
-func4_inputs = np.vstack([func4_inputs, week11_queries['func4']])
-func4_outputs = np.append(func4_outputs, week11_outputs['func4'])
+func4_inputs = np.vstack([func4_inputs, week12_queries['func4']])
+func4_outputs = np.append(func4_outputs, week12_outputs['func4'])
 
 # AFTER APPENDING
 print(f"\nAFTER:")
@@ -241,10 +241,10 @@ print(f"  New output: {func4_outputs[-1]}")
 
 # VERIFY
 print(f"\nVERIFY:")
-print(f"  Expected new input: {week11_queries['func4']}")
-print(f"  Match? {np.array_equal(func4_inputs[-1], week11_queries['func4'])}")
-print(f"  Expected new output: {week11_outputs['func4']}")
-print(f"  Match? {func4_outputs[-1] == week11_outputs['func4']}")
+print(f"  Expected new input: {week12_queries['func4']}")
+print(f"  Match? {np.array_equal(func4_inputs[-1], week12_queries['func4'])}")
+print(f"  Expected new output: {week12_outputs['func4']}")
+print(f"  Match? {func4_outputs[-1] == week12_outputs['func4']}")
 print(f"  Total points: {len(func4_outputs)}")
 
 # =============================================================================
@@ -254,8 +254,8 @@ print("\n" + "="*60)
 print("FUNCTION 5: APPENDING NEW DATA")
 print("="*60)
 # APPEND
-func5_inputs = np.vstack([func5_inputs, week11_queries['func5']])
-func5_outputs = np.append(func5_outputs, week11_outputs['func5'])
+func5_inputs = np.vstack([func5_inputs, week12_queries['func5']])
+func5_outputs = np.append(func5_outputs, week12_outputs['func5'])
 
 # AFTER APPENDING
 print(f"\nAFTER:")
@@ -267,10 +267,10 @@ print(f"  New best: {func5_outputs.max():.6f} (was {func5_outputs[:-1].max():.6f
 
 # VERIFY
 print(f"\nVERIFY:")
-print(f"  Expected new input: {week11_queries['func5']}")
-print(f"  Match? {np.array_equal(func5_inputs[-1], week11_queries['func5'])}")
-print(f"  Expected new output: {week11_outputs['func5']}")
-print(f"  Match? {func5_outputs[-1] == week11_outputs['func5']}")
+print(f"  Expected new input: {week12_queries['func5']}")
+print(f"  Match? {np.array_equal(func5_inputs[-1], week12_queries['func5'])}")
+print(f"  Expected new output: {week12_outputs['func5']}")
+print(f"  Match? {func5_outputs[-1] == week12_outputs['func5']}")
 print(f"  Total points: {len(func5_outputs)}")
 print(f"  🎉 New best: {func5_outputs.max():.6f}")
 
@@ -281,8 +281,8 @@ print("\n" + "="*60)
 print("FUNCTION 6: APPENDING NEW DATA")
 print("="*60)
 # APPEND
-func6_inputs = np.vstack([func6_inputs, week11_queries['func6']])
-func6_outputs = np.append(func6_outputs, week11_outputs['func6'])
+func6_inputs = np.vstack([func6_inputs, week12_queries['func6']])
+func6_outputs = np.append(func6_outputs, week12_outputs['func6'])
 
 # AFTER APPENDING
 print(f"\nAFTER:")
@@ -293,10 +293,10 @@ print(f"  New output: {func6_outputs[-1]:.6f}")
 
 # VERIFY
 print(f"\nVERIFY:")
-print(f"  Expected new input: {week11_queries['func6']}")
-print(f"  Match? {np.array_equal(func6_inputs[-1], week11_queries['func6'])}")
-print(f"  Expected new output: {week11_outputs['func6']}")
-print(f"  Match? {func6_outputs[-1] == week11_outputs['func6']}")
+print(f"  Expected new input: {week12_queries['func6']}")
+print(f"  Match? {np.array_equal(func6_inputs[-1], week12_queries['func6'])}")
+print(f"  Expected new output: {week12_outputs['func6']}")
+print(f"  Match? {func6_outputs[-1] == week12_outputs['func6']}")
 print(f"  Total points: {len(func6_outputs)}")
 
 # =============================================================================
@@ -306,8 +306,8 @@ print("\n" + "="*60)
 print("FUNCTION 7: APPENDING NEW DATA")
 print("="*60)
 # APPEND
-func7_inputs = np.vstack([func7_inputs, week11_queries['func7']])
-func7_outputs = np.append(func7_outputs, week11_outputs['func7'])
+func7_inputs = np.vstack([func7_inputs, week12_queries['func7']])
+func7_outputs = np.append(func7_outputs, week12_outputs['func7'])
 
 # AFTER APPENDING
 print(f"\nAFTER:")
@@ -318,10 +318,10 @@ print(f"  New output: {func7_outputs[-1]:.6f}")
 
 # VERIFY
 print(f"\nVERIFY:")
-print(f"  Expected new input: {week11_queries['func7']}")
-print(f"  Match? {np.array_equal(func7_inputs[-1], week11_queries['func7'])}")
-print(f"  Expected new output: {week11_outputs['func7']}")
-print(f"  Match? {func7_outputs[-1] == week11_outputs['func7']}")
+print(f"  Expected new input: {week12_queries['func7']}")
+print(f"  Match? {np.array_equal(func7_inputs[-1], week12_queries['func7'])}")
+print(f"  Expected new output: {week12_outputs['func7']}")
+print(f"  Match? {func7_outputs[-1] == week12_outputs['func7']}")
 print(f"  Total points: {len(func7_outputs)}")
 
 # =============================================================================
@@ -331,8 +331,8 @@ print("\n" + "="*60)
 print("FUNCTION 8: APPENDING NEW DATA")
 print("="*60)
 # APPEND
-func8_inputs = np.vstack([func8_inputs, week11_queries['func8']])
-func8_outputs = np.append(func8_outputs, week11_outputs['func8'])
+func8_inputs = np.vstack([func8_inputs, week12_queries['func8']])
+func8_outputs = np.append(func8_outputs, week12_outputs['func8'])
 
 # AFTER APPENDING
 print(f"\nAFTER:")
@@ -343,45 +343,45 @@ print(f"  New output: {func8_outputs[-1]:.6f}")
 
 # VERIFY
 print(f"\nVERIFY:")
-print(f"  Expected new input: {week11_queries['func8']}")
-print(f"  Match? {np.array_equal(func8_inputs[-1], week11_queries['func8'])}")
-print(f"  Expected new output: {week11_outputs['func8']}")
-print(f"  Match? {func8_outputs[-1] == week11_outputs['func8']}")
+print(f"  Expected new input: {week12_queries['func8']}")
+print(f"  Match? {np.array_equal(func8_inputs[-1], week12_queries['func8'])}")
+print(f"  Expected new output: {week12_outputs['func8']}")
+print(f"  Match? {func8_outputs[-1] == week12_outputs['func8']}")
 print(f"  Total points: {len(func8_outputs)}")
 
 # Remember to change the week numbers in the paths below.
 
 # Function 1
-np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_1\\updated_inputs.npy', func1_inputs)
-np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_1\\updated_outputs.npy', func1_outputs)
+np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_1\\updated_inputs.npy', func1_inputs)
+np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_1\\updated_outputs.npy', func1_outputs)
 
 # Function 2
-np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_2\\updated_inputs.npy', func2_inputs)
-np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_2\\updated_outputs.npy', func2_outputs)
+np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_2\\updated_inputs.npy', func2_inputs)
+np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_2\\updated_outputs.npy', func2_outputs)
 
 # Function 3
-np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_3\\updated_inputs.npy', func3_inputs)
-np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_3\\updated_outputs.npy', func3_outputs)
+np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_3\\updated_inputs.npy', func3_inputs)
+np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_3\\updated_outputs.npy', func3_outputs)
 
 # Function 4
-np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_4\\updated_inputs.npy', func4_inputs)
-np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_4\\updated_outputs.npy', func4_outputs)
+np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_4\\updated_inputs.npy', func4_inputs)
+np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_4\\updated_outputs.npy', func4_outputs)
 
 # Function 5
-np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_5\\updated_inputs.npy', func5_inputs)
-np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_5\\updated_outputs.npy', func5_outputs)
+np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_5\\updated_inputs.npy', func5_inputs)
+np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_5\\updated_outputs.npy', func5_outputs)
 
 # Function 6
-np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_6\\updated_inputs.npy', func6_inputs)
-np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_6\\updated_outputs.npy', func6_outputs)
+np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_6\\updated_inputs.npy', func6_inputs)
+np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_6\\updated_outputs.npy', func6_outputs)
 
 # Function 7
-np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_7\\updated_inputs.npy', func7_inputs)
-np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_7\\updated_outputs.npy', func7_outputs)
+np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_7\\updated_inputs.npy', func7_inputs)
+np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_7\\updated_outputs.npy', func7_outputs)
 
 # Function 8
-np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_8\\updated_inputs.npy', func8_inputs)
-np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_11\\function_8\\updated_outputs.npy', func8_outputs)
+np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_8\\updated_inputs.npy', func8_inputs)
+np.save('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\Data\\Week_12\\function_8\\updated_outputs.npy', func8_outputs)
 
 
 

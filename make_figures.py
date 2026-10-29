@@ -142,6 +142,8 @@ PRED = [
     (10, 8, "GP", 9.945100, 0.013800, 9.936602),
     (11, 3, "GP", -0.004000, 0.008600, -0.012375), (11, 5, "GP", 3742.100000, 5.000000, 3747.600069),
     (11, 7, "GP", 2.533300, 0.040000, 2.598802), (11, 8, "GP", 9.952800, 0.010300, 9.948881),
+    (12, 4, "GP", 0.797400, 0.108100, 0.497855), (12, 5, "GP", 3976.323300, 3.431300, 3984.690348),
+    (12, 7, "GP", 2.696800, 0.030000, 2.715793), (12, 8, "GP", 9.962100, 0.009100, 9.963415),
 ]
 with open(ROOT / "results" / "prediction_log.csv", "w", newline="") as fh:
     wr = csv.writer(fh)
@@ -150,8 +152,8 @@ with open(ROOT / "results" / "prediction_log.csv", "w", newline="") as fh:
         wr.writerow([wk, f, m, mu, sd, act, round((act - mu) / sd, 3)])
 
 fig, ax = plt.subplots(figsize=(10, 5.5), constrained_layout=True)
-wk_color = {6: "#56B4E9", 7: "#E69F00", 8: "#009E73", 9: "#CC79A7", 10: "#D55E00", 11: "#0072B2"}
-offset = {6: -0.35, 7: -0.21, 8: -0.07, 9: 0.07, 10: 0.21, 11: 0.35}
+wk_color = {6: "#56B4E9", 7: "#E69F00", 8: "#009E73", 9: "#CC79A7", 10: "#D55E00", 11: "#0072B2", 12: "#882255"}
+offset = {6: -0.36, 7: -0.24, 8: -0.12, 9: 0.0, 10: 0.12, 11: 0.24, 12: 0.36}
 for wk, f, m, mu, sd, act in PRED:
     if f == 1:
         continue
@@ -164,10 +166,10 @@ ax.set_xticks(range(2, 9))
 ax.set_xticklabels([f"F{f}" for f in range(2, 9)])
 ax.set_ylabel("(actual - predicted) / predicted std")
 ax.set_title("Prediction error in standard deviations (shaded band = within 1 std)", fontweight="bold")
-handles = [plt.Line2D([], [], marker="o", ls="", color=wk_color[w], markeredgecolor="black", label=f"Week {w} result") for w in (6, 7, 8, 9, 10, 11)]
+handles = [plt.Line2D([], [], marker="o", ls="", color=wk_color[w], markeredgecolor="black", label=f"Week {w} result") for w in (6, 7, 8, 9, 10, 11, 12)]
 handles += [plt.Line2D([], [], marker="o", ls="", color="white", markeredgecolor="black", label="GP pick"),
             plt.Line2D([], [], marker="s", ls="", color="white", markeredgecolor="black", label="RF pick")]
-ax.legend(handles=handles, frameon=False, ncol=2, loc="lower right")
+ax.legend(handles=handles, frameon=False, ncol=5, loc="upper center", bbox_to_anchor=(0.5, -0.06))
 fig.savefig(OUT / "fig5_prediction_error.png")
 plt.close(fig)
 
