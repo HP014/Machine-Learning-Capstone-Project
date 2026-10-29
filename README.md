@@ -31,6 +31,8 @@ I used **Bayesian optimisation**: fit a model to the points so far, then use it 
 - **Gaussian Process (GP)** surrogate (scikit-learn), which predicts the output and how uncertain that prediction is. I chose it because it works well with very few points and gives a usable uncertainty.
 - **Random Forest** surrogate (200 trees), added as a second opinion. Its uncertainty is the spread of the individual trees' predictions. I chose it because it is far less sensitive to extreme output scales and rough landscapes.
 - **Acquisition functions** (UCB and Expected Improvement) turn those predictions into a score for each candidate point, and the highest score is queried next.
+  - **Why UCB and EI together:** UCB (mean plus kappa times the standard deviation) rewards uncertainty, so it explores. EI rewards the expected gain over the current best, so it is more cautious. When they agree I trust the pick more, and when they disagree I choose using the predicted mean and uncertainty. Using both also helped when UCB alone kept proposing points I had already sampled. `[CONFIRM: add the academic paper reference for using UCB and EI]`
+  - **Why a Gaussian Process first:** it gives both a prediction and an uncertainty, which UCB and EI both need, and it suits the small datasets here (10 to 52 points per function). I did not try neural networks because they need far more data than this and do not give an uncertainty estimate without extra machinery.
 - **Extra safeguards and methods added along the way:**
   - A duplicate-query safeguard, so no point within 0.001 of an earlier one can be chosen. I added it because F1's Week 4 query was an exact repeat of Week 3's, which gave no new information.
   - A local search in a small box around the best point (used for F3 and F4), because the global search kept choosing far-off points that the models themselves predicted to be poor.
@@ -43,7 +45,7 @@ The model card (`model_card.md`) has the details, limitations and trade-offs. Th
 Each decision below comes with the evidence and what it cost. The week is when the change was made. The full reasoning for every weekly query is in `CHANGELOG.md`.
 
 - **Week 6: added a Random Forest as a second surrogate.** I had only used a GP. For F1 the GP kept returning to the same flat corners whatever the kernel or kappa. For F5 it had no signal far from the data (mean 0, std 316), while the Random Forest's prediction of 2478.8 landed near my best known point. The cost was that the Random Forest extrapolated noise for F4 (mean -6.65, std 8.71, against observed values of -1.28 to 0.37), so I ignored it there.
-- **Week 6: excluded any candidate within 0.001 of a sampled point.** F1's Week 4 query was an exact repeat of Week 3's, because UCB and EI kept proposing known points and I followed them. A repeat gives no new information. Four earlier repeated rows remain in the data.
+- **Week 6: excluded any candidate within 0.001 of a sampled point.** Four queries were exact repeats of earlier ones: F1 in Week 4 (repeating Week 3), F4 in Week 4 (repeating Week 3), and F5 in Weeks 3 and 4 (both repeating its Week 1 peak). The code took the highest-scoring of 10,000 random candidates without checking whether that point had been queried before, so when the model was flat or very confident the same point kept winning. For F1 the model had no signal, because nearly every output was close to zero. For F4 the model was very sure near its new best (std 0.0010), so UCB pointed straight back at it. For F5 the UCB and EI picks elsewhere did not give high certainty, so I went back to the known maximum (2986.94) instead. Each repeat returned exactly the same output, so it gave no new information and cost a query. The safeguard removes any candidate within 0.001 of a sampled point before the best is chosen. The four repeated rows remain in the data because they were genuine queries, and removing them would change the record of what I submitted.
 - **Week 7: modelled F1 on the log of its absolute output.** F1's outputs range from 1e-245 to 1e-3, so squared error treats everything near zero as identical and the raw models could not see a gradient. In log terms there is a clear one. The cost is that the sign is dropped, so this finds the active region and not the exact peak.
 - **Week 7: searched a small box around the best point for F3 and F4.** The global search chose far-off points that the models themselves predicted to be poor (F4's GP predicted -13 against a best of 0.3675), because uncertainty is highest where there is no data. This refines a known peak and cannot find a different one.
 - **Week 8: exploited around each best point (±0.02 box, highest predicted value).** Most functions now had an established best region. I chose small steps because F2, F4 and F7 had all dropped sharply when they moved away from their best. It risks settling on a local peak, but all eight functions set a new best in the following round.
@@ -54,19 +56,20 @@ Each decision below comes with the evidence and what it cost. The week is when t
 - **Weeks 10 to 12: used line searches and half steps for F4 and F6, and an anisotropic GP for F4.** The GP's picks sat next to a failed point or predicted nothing above the best, so where a step stopped working I halved it or fitted a curve along it. Once F4's line was used up, a GP with a length scale for each input predicted the last three points better than the plain one (errors of 0.14, 0.49 and 0.50 against 0.83, 0.59 and 0.57) and showed that x1 and x2 matter most. These picks are low confidence, and the anisotropic GP was overconfident on one of the three points (5.9 standard deviations).
 
 ## HYPERPARAMETER OPTIMSATION
-| Function | Kernel (starting length scale) | UCB kappa | EI xi |
-|---|---|---|---|
-| F1 (raw models) | RBF (0.3) + white noise | 0.1 | 0.1 |
-| F2 | RBF (0.2) | 2.0 | 0.1 |
-| F3 | Matern 2.5 (0.1) | 1.5 | 0.01 |
-| F4 | Matern 2.5 (0.1) | 1.5 | 0.01 |
-| F5 | Matern 1.5 (0.2) | 1.5 | 0.01 |
-| F6 | Matern 1.5 (0.1) | 2.5 | 0.01 |
-| F7 | Matern 1.5 (0.15) | 1.7 | 0.01 |
-| F8 | Matern 1.5 (0.2) | 3.0 | 0.02 |
+| Function | Kernel (starting length scale) | UCB kappa | EI xi | Why these values |
+|---|---|---|---|---|
+| F1 (raw models) | RBF (0.3) + white noise | 0.1 | 0.1 | Reason not recorded |
+| F1 (log models, from Week 7) | RBF (0.3) + white noise | 1.5 | 0.01 | Starting rule for 2D functions, default xi |
+| F2 | RBF (0.2) | 2.0 | 0.1 | Kept at 2.0 to keep exploring, as F2 never beat its starting 0.6112 in Weeks 1 to 5 |
+| F3 | Matern 2.5 (0.1) | 1.5 | 0.01 | Lowered from the rule's 2.0 to focus on a proposed maximum |
+| F4 | Matern 2.5 (0.1) | 1.5 | 0.01 | Lowered from the rule's 2.0 to focus on a proposed maximum |
+| F5 | Matern 1.5 (0.2) | 1.5 | 0.01 | Lowered from the rule's 2.0 to focus on its Week 1 peak |
+| F6 | Matern 1.5 (0.1) | 2.5 | 0.01 | Starting rule for 5D, kept |
+| F7 | Matern 1.5 (0.15) | 1.7 | 0.01 | Lowered from the rule's 2.5 to focus on a proposed maximum near a new best |
+| F8 | Matern 1.5 (0.2) | 3.0 | 0.02 | Reason not recorded |
 
 - **GP kernel parameters** (length scale, amplitude, noise) are fitted automatically by maximising the log marginal likelihood, with 10 random restarts. The kernel type and starting length scale were chosen by hand. I assigned the kernels in order of function number: the smoother RBF kernel for the two 2D functions, which are the easiest to model, and Matern kernels for the rest. RBF assumes a very smooth function, while Matern allows a rougher one, and the higher-dimensional functions have sparser data and are less predictable. The starting length scales (0.1 to 0.3) are only starting points, because the fit then optimises them.
-- **kappa and xi** control exploration against exploitation. I set them by judgement for each function and did not run a search, because each function allows only one real evaluation per week. I checked how sensitive the choices were: inside a small box around the best point, raising kappa from 0 to 2 moved most picks by under 0.03 and lowered the predicted value by a few percent, so the box size mattered more than kappa.
+- **kappa and xi** control exploration against exploitation. My overall plan was to explore in the first few weeks and exploit in the later weeks. I started with a rule based on dimension (kappa 1.5 for the 2D functions, 2.0 for F3 to F5, 2.5 for F6 to F8, with xi at 0.01), because higher-dimensional functions have sparser data and need more exploration. Where I lowered kappa, it was to focus on a proposed maximum. The later exploitation came mainly from searching small boxes around each best point (Week 8 onwards), not from changing kappa, because I checked how sensitive the picks were: inside a small box around the best point, raising kappa from 0 to 2 moved most picks by under 0.03 and lowered the predicted value by a few percent, so the box size mattered more than kappa. I set the values by judgement and did not run a search, because each function allows only one real evaluation per week.
 - **White noise (F1 only):** added in Week 5 to keep the fits stable and to allow for noise in the outputs. Almost all of F1's results were close to zero, so I tried adding something new there to stop the fit chasing tiny differences between near-zero values. Repeated queries returned identical outputs, so it is a precaution and not a measured noise level. The other functions' GPs do not include it.
 - **Random Forest:** 200 trees, fixed random seed (42), other settings left at the scikit-learn defaults. I used more trees than the default of 100 because the uncertainty is the spread across trees, so more trees give a steadier estimate, and it costs little with this little data. I did not tune it.
 - **10,000 random candidates:** a GP prediction is cheap, so 10,000 gives decent coverage in 2 to 3 dimensions. It is coarse in 8 dimensions, which is listed as a limitation in the model card.
@@ -76,19 +79,29 @@ Each decision below comes with the evidence and what it cost. The week is when t
 ## RESULTS
 All eight functions improved over the twelve weeks. Every function set a new best in Week 8, five of the eight did so again in Week 9, three did in Week 10, six did in Week 11, and four did in Week 12.
 
+**Fig 1, best output so far by week:** the long flat stretches before Week 8 are the evidence for switching from exploring to exploiting around each best point.
+
 ![Best output so far by week](results/figures/fig1_best_so_far.png)
+
+**Fig 2, progress for every function:** putting all eight on one 0 to 1 scale shows which functions were still improving and which had stalled, which is why I moved effort to F1, whose output stayed stagnant week after week.
 
 ![Progress for every function](results/figures/fig2_progress_all_functions.png)
 
 - **Most of the gains came in bursts**, with long flat stretches in between. Several functions only improved again after the switch to small steps around the best point.
 
+**Fig 3, exploration versus exploitation:** the drop in the distance from the previous best from Week 8 is the evidence for the small-step plan (±0.02 boxes) and for my aim to explore early and exploit late.
+
 ![Exploration versus exploitation](results/figures/fig3_exploration_vs_exploitation.png)
 
 - **Prediction quality was mixed.** Comparing each model's prediction with the output that actually came back, the GP's prediction was within one standard deviation 47% of the time (36 predictions). The Random Forest was within one standard deviation in 2 of 3 predictions, which is too few to compare fairly.
 
+**Fig 5, prediction error:** models that miss by several standard deviations are the reason I treated the GP's uncertainty with caution and read the F5 and F4 picks as a direction, not a confident prediction.
+
 ![Prediction error](results/figures/fig5_prediction_error.png)
 
 - **F1 is a very hard function.** Almost every output is effectively zero, so an ordinary GP learned nothing useful from it. A small-step search finally increased its best value by a factor of about 12 in one week. The next step flipped the sign of the output (-8.4e-5), which shows its structure is finer than the step size, so the search now uses smaller steps. A third point along x1 then showed that the positive stripe is only about 0.0135 wide, and the search is now climbing along it. The first step along the stripe raised the best value by about 6x, to 1.43e-4. The next step overshot and flipped the sign again (-2.1e-4), which puts the top of the stripe between those two points.
+
+**Fig 4, F1 map:** almost every point is effectively zero with a narrow stripe of signal, which is why I stopped using model-based picks for F1 and switched to a small-step pattern search.
 
 ![F1 map](results/figures/fig4_f1_map.png)
 

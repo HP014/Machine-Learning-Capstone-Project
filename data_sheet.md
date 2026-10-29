@@ -38,7 +38,7 @@
 ## Uses
 
 - **What other tasks could the dataset be used for?** Benchmarking optimisation methods and surrogate models, or studying how models cope with extreme output scales (F1) and narrow peaks.
-- **Is there anything that might affect future uses?** The points are not independent or evenly spread, because each one was chosen by an optimisation process, so they are unsuitable for statistics that assume random sampling. F1's outputs span hundreds of orders of magnitude. Four rows are repeated queries.
+- **Is there anything that might affect future uses?** The points are not independent or evenly spread, because each one was chosen by an optimisation process, so they are unsuitable for statistics that assume random sampling. F1's outputs span hundreds of orders of magnitude. Four rows are repeated queries, caused by a missing duplicate check that was added in Week 6.
 - **Tasks the dataset should not be used for:** Drawing conclusions about the true shape or maximum of any function beyond the regions sampled, or treating it as representative of real-world data.
 
 ## Distribution

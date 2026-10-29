@@ -1,3 +1,8 @@
+# Weekly Bayesian optimisation script for the eight black-box functions.
+# What it does: loads the latest data, fits a Gaussian Process (GP) and a Random Forest (RF) for each
+# function, scores 10,000 random candidate points with UCB and EI, and prints the proposed next points.
+# The final query for each week is chosen by hand from these outputs plus the extra searches described in
+# CHANGELOG.md (local searches, line searches, F1 pattern search). The reasons are in README.md.
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.gaussian_process import GaussianProcessRegressor
@@ -18,7 +23,7 @@ from plotting_utils import (
 # Import Random Forest surrogate model
 from surrogate_models import fit_random_forest_surrogate, random_forest_predict, log_magnitude
 
-# Set random seed for reproducibility
+# Set random seed for reproducibility (the 10,000 random candidates are the same on every run)
 np.random.seed(42)
 plt.style.use('seaborn-v0_8-darkgrid')  
 
@@ -49,7 +54,7 @@ func8_outputs = np.load('C:\\Users\\hilto\\OneDrive\\Desktop\\Improved RA_12_1\\
 
 
 
-# Check the shapes and basic info for all functions
+# Put the eight functions in one dictionary and print the shapes, to check the data loaded correctly
 functions = {
     'func1': (func1_inputs, func1_outputs),
     'func2': (func2_inputs, func2_outputs),
@@ -64,8 +69,10 @@ functions = {
 for name, (inputs, outputs) in functions.items():
     print(f"{name}: inputs {inputs.shape}, outputs {outputs.shape}")
 
+# Report the best point so far for one function. The best points are reused later as the centres of the
+# local search boxes (F3 and F4).
 def analyze_function(name, inputs, outputs):
-    #Find the best point and basic statistics
+    # Find the best point and basic statistics
     best_idx = np.argmax(outputs)
     best_output = outputs[best_idx]
     best_input = inputs[best_idx]
@@ -135,6 +142,8 @@ for key, value in week12_outputs.items():
     print(f"  {key}: {value}")
 
 
+# Weekly append block below: it sits inside a string so it does not run by accident. Run it once per
+# week to add the new queries and outputs to the data, otherwise the same rows would be added twice.
 """
 # =============================================================================
 # Appending New Data And Verifying
@@ -154,8 +163,8 @@ func1_outputs = np.append(func1_outputs, week12_outputs['func1'])
 
 # AFTER APPENDING
 print(f"\nAFTER:")
-print(f"  Inputs shape: {func1_inputs.shape}")  # Now (11, 2)
-print(f"  Outputs shape: {func1_outputs.shape}")  # Now (11,)
+print(f"  Inputs shape: {func1_inputs.shape}")
+print(f"  Outputs shape: {func1_outputs.shape}")
 print(f"  New input point: {func1_inputs[-1]}")
 print(f"  New output: {func1_outputs[-1]}")
 print(f"  Last 3 inputs:\n{func1_inputs[-3:]}")
@@ -181,8 +190,8 @@ func2_outputs = np.append(func2_outputs, week12_outputs['func2'])
 
 # AFTER APPENDING
 print(f"\nAFTER:")
-print(f"  Inputs shape: {func2_inputs.shape}")  # Now (11, 2)
-print(f"  Outputs shape: {func2_outputs.shape}")  # Now (11,)
+print(f"  Inputs shape: {func2_inputs.shape}")
+print(f"  Outputs shape: {func2_outputs.shape}")
 print(f"  New input point: {func2_inputs[-1]}")
 print(f"  New output: {func2_outputs[-1]}")
 print(f"  Last 3 inputs:\n{func2_inputs[-3:]}")
@@ -208,8 +217,8 @@ func3_outputs = np.append(func3_outputs, week12_outputs['func3'])
 
 # AFTER APPENDING
 print(f"\nAFTER:")
-print(f"  Inputs shape: {func3_inputs.shape}")  # Now (16, 3)
-print(f"  Outputs shape: {func3_outputs.shape}")  # Now (16,)
+print(f"  Inputs shape: {func3_inputs.shape}")
+print(f"  Outputs shape: {func3_outputs.shape}")
 print(f"  New input point: {func3_inputs[-1]}")
 print(f"  New output: {func3_outputs[-1]}")
 
@@ -234,8 +243,8 @@ func4_outputs = np.append(func4_outputs, week12_outputs['func4'])
 
 # AFTER APPENDING
 print(f"\nAFTER:")
-print(f"  Inputs shape: {func4_inputs.shape}")  # Now (31, 4)
-print(f"  Outputs shape: {func4_outputs.shape}")  # Now (31,)
+print(f"  Inputs shape: {func4_inputs.shape}")
+print(f"  Outputs shape: {func4_outputs.shape}")
 print(f"  New input point: {func4_inputs[-1]}")
 print(f"  New output: {func4_outputs[-1]}")
 
@@ -259,8 +268,8 @@ func5_outputs = np.append(func5_outputs, week12_outputs['func5'])
 
 # AFTER APPENDING
 print(f"\nAFTER:")
-print(f"  Inputs shape: {func5_inputs.shape}")  # Now (16, 4)
-print(f"  Outputs shape: {func5_outputs.shape}")  # Now (16,)
+print(f"  Inputs shape: {func5_inputs.shape}")
+print(f"  Outputs shape: {func5_outputs.shape}")
 print(f"  New input point: {func5_inputs[-1]}")
 print(f"  New output: {func5_outputs[-1]:.6f}")
 print(f"  New best: {func5_outputs.max():.6f} (was {func5_outputs[:-1].max():.6f})")
@@ -286,8 +295,8 @@ func6_outputs = np.append(func6_outputs, week12_outputs['func6'])
 
 # AFTER APPENDING
 print(f"\nAFTER:")
-print(f"  Inputs shape: {func6_inputs.shape}")  # Now (21, 5)
-print(f"  Outputs shape: {func6_outputs.shape}")  # Now (21,)
+print(f"  Inputs shape: {func6_inputs.shape}")
+print(f"  Outputs shape: {func6_outputs.shape}")
 print(f"  New input point: {func6_inputs[-1]}")
 print(f"  New output: {func6_outputs[-1]:.6f}")
 
@@ -311,8 +320,8 @@ func7_outputs = np.append(func7_outputs, week12_outputs['func7'])
 
 # AFTER APPENDING
 print(f"\nAFTER:")
-print(f"  Inputs shape: {func7_inputs.shape}")  # Now (31, 6)
-print(f"  Outputs shape: {func7_outputs.shape}")  # Now (31,)
+print(f"  Inputs shape: {func7_inputs.shape}")
+print(f"  Outputs shape: {func7_outputs.shape}")
 print(f"  New input point: {func7_inputs[-1]}")
 print(f"  New output: {func7_outputs[-1]:.6f}")
 
@@ -336,8 +345,8 @@ func8_outputs = np.append(func8_outputs, week12_outputs['func8'])
 
 # AFTER APPENDING
 print(f"\nAFTER:")
-print(f"  Inputs shape: {func8_inputs.shape}")  # Now (41, 8)
-print(f"  Outputs shape: {func8_outputs.shape}")  # Now (41,)
+print(f"  Inputs shape: {func8_inputs.shape}")
+print(f"  Outputs shape: {func8_outputs.shape}")
 print(f"  New input point: {func8_inputs[-1]}")
 print(f"  New output: {func8_outputs[-1]:.6f}")
 
@@ -406,13 +415,22 @@ print("="*60)
 print("FITTING GP FOR EACH FUNCTION")
 print("="*60)
 
-# Fit Gaussian Process
+# Fit one Gaussian Process per function. The kernel type and starting length scale were chosen by hand, in
+# order of function number: smooth RBF for the two 2D functions, Matern (allows a rougher function) for the
+# rest, as the higher-dimensional functions have sparser data and are less predictable. The starting length
+# scale is only a starting point, because the fit then optimises it (10 random restarts, so the fit is less
+# likely to get stuck in a poor local optimum).
+
 # Function 1: 2D - RBF kernel
-kernel1 = ConstantKernel(1.0) * RBF(length_scale=0.3) + WhiteKernel(noise_level=0.01)  # Using RBF for better flexibility
+# White noise is used for F1 only: it keeps the fit stable, as nearly all F1 outputs are near zero.
+# It is a precaution, not a measured noise level.
+kernel1 = ConstantKernel(1.0) * RBF(length_scale=0.3) + WhiteKernel(noise_level=0.01)
 gp1 = GaussianProcessRegressor(kernel=kernel1, alpha=1e-6, n_restarts_optimizer=10)
 gp1.fit(func1_inputs, func1_outputs)
 print("✅ func1 fitted (2D, RBF length_scale=0.3)")
 
+# Random Forest (200 trees): a second opinion for each function. Its uncertainty is the spread across the
+# trees. From Week 8 it was not used for the final picks, as it cannot predict above the best value it has seen.
 # Function 1: Random Forest surrogate (comparison model)
 rf1 = fit_random_forest_surrogate(func1_inputs, func1_outputs)
 print("✅ func1 fitted (Random Forest, 200 trees)")
@@ -426,8 +444,8 @@ gp1_log.fit(func1_inputs, z1)
 rf1_log = fit_random_forest_surrogate(func1_inputs, z1)
 print("✅ func1 fitted (log10|y| GP and Random Forest)")
 
-# Function 2: 2D - RBF kernel (maybe different length_scale)
-kernel2 = ConstantKernel(1.0) * RBF(length_scale=0.2)  # Different length_scale
+# Function 2: 2D - RBF kernel, starting length scale 0.2
+kernel2 = ConstantKernel(1.0) * RBF(length_scale=0.2)
 gp2 = GaussianProcessRegressor(kernel=kernel2, alpha=1e-6, n_restarts_optimizer=10)
 gp2.fit(func2_inputs, func2_outputs)
 print("✅ func2 fitted (2D, RBF length_scale=0.2)")
@@ -436,7 +454,7 @@ print("✅ func2 fitted (2D, RBF length_scale=0.2)")
 rf2 = fit_random_forest_surrogate(func2_inputs, func2_outputs)
 print("✅ func2 fitted (Random Forest, 200 trees)")
 
-# Function 3: 3D - Matern kernel (better for higher dimensions)
+# Function 3: 3D - Matern 2.5 kernel (allows a rougher function than RBF)
 kernel3 = ConstantKernel(1.0) * Matern(length_scale=0.1, nu=2.5)
 gp3 = GaussianProcessRegressor(kernel=kernel3, alpha=1e-6, n_restarts_optimizer=10)
 gp3.fit(func3_inputs, func3_outputs)
@@ -456,8 +474,8 @@ print("✅ func4 fitted (4D, Matern nu=2.5)")
 rf4 = fit_random_forest_surrogate(func4_inputs, func4_outputs)
 print("✅ func4 fitted (Random Forest, 200 trees)")
 
-# Function 5: 4D - Different kernel (maybe longer length_scale)
-kernel5 = ConstantKernel(1.0) * Matern(length_scale=0.2, nu=1.5)  # More flexible
+# Function 5: 4D - Matern 1.5 kernel, starting length scale 0.2
+kernel5 = ConstantKernel(1.0) * Matern(length_scale=0.2, nu=1.5)
 gp5 = GaussianProcessRegressor(kernel=kernel5, alpha=1e-6, n_restarts_optimizer=10)
 gp5.fit(func5_inputs, func5_outputs)
 print("✅ func5 fitted (4D, Matern nu=1.5, length_scale=0.2)")
@@ -486,7 +504,7 @@ print("✅ func7 fitted (6D, Matern nu=1.5, length_scale=0.15)")
 rf7 = fit_random_forest_surrogate(func7_inputs, func7_outputs)
 print("✅ func7 fitted (Random Forest, 200 trees)")
 
-# Function 8: 8D - Matern with nu=1.5 (higher exploration)
+# Function 8: 8D - Matern 1.5 kernel, starting length scale 0.2
 kernel8 = ConstantKernel(1.0) * Matern(length_scale=0.2, nu=1.5)
 gp8 = GaussianProcessRegressor(kernel=kernel8, alpha=1e-6, n_restarts_optimizer=10)
 gp8.fit(func8_inputs, func8_outputs)
@@ -505,14 +523,15 @@ print("\n" + "="*60)
 print("FUNCTION 1: MAKING PREDICTIONS")
 print("="*60)
 
-# Generate candidate points (10000 random points in 2D)
+# Generate candidate points: 10,000 random points in 2D. A GP prediction is cheap, so this gives decent
+# coverage in 2 to 3 dimensions (it is coarse in 8 dimensions).
 candidates_f1 = np.random.random((10000, 2))
 # Make predictions using gp1
 mean_f1, std_f1 = gp1.predict(candidates_f1, return_std=True)
 print(f"Predictions for Function 1:")
 print(f"  Mean range: [{mean_f1.min():.6f}, {mean_f1.max():.6f}]")
 print(f"  Std range: [{std_f1.min():.6f}, {std_f1.max():.6f}]")
-# Find best prediction (highest mean)
+# Find best prediction (highest mean): a pure exploit pick that ignores uncertainty
 best_idx_f1 = np.argmax(mean_f1)
 best_candidate_f1 = candidates_f1[best_idx_f1]
 print(f"  Best predicted point: {best_candidate_f1}")
@@ -740,6 +759,7 @@ print(f"  Best predicted mean: {mean_f8_rf[best_idx_f8_rf]:.6f}")
 
 # =============================================================================
 # VISUALIZE FUNCTION 1 PREDICTIONS
+# These plots are for inspection only and do not change the picks.
 # =============================================================================
 
 print("\n" + "="*60)
@@ -820,6 +840,9 @@ plt.show()
 
 # =============================================================================
 # FUNCTION 1: ACQUISITION (2D)
+# Each candidate is scored with UCB (mean + kappa * std, which favours uncertain points, so it explores)
+# and EI (expected gain over the best value so far, which is more cautious). The highest score among
+# the valid candidates is the proposed next point. When UCB and EI agree, the pick is more trustworthy.
 # =============================================================================
 
 print("\n" + "="*60)
@@ -829,11 +852,11 @@ print("="*60)
 # Best observed value so far
 y_best_1 = func1_outputs.max()
 
-# Exclude candidates that duplicate (or nearly duplicate) an already-sampled
-# point, so acquisition can't recommend re-querying a point you already have.
+# Exclude candidates within 0.001 of an already-sampled point, so acquisition can't recommend re-querying
+# a point you already have. Added in Week 6 after F1, F4 and F5 repeated points in Weeks 3 and 4.
 valid_1 = unsampled_mask(candidates_f1, func1_inputs)
 
-# UCB (kappa=1.5 for 2D)
+# UCB, raw F1 models: kappa=0.1 and xi=0.1 (reason not recorded)
 ucb_1 = upper_confidence_bound(mean_f1, std_f1, kappa=0.1)
 best_ucb_idx_1 = np.argmax(np.where(valid_1, ucb_1, -np.inf))
 next_point_ucb_1 = candidates_f1[best_ucb_idx_1]
@@ -879,6 +902,8 @@ print(f"  Std: {std_f1_rf[best_ei_idx_1_rf]:.6f}")
 # Log-space acquisition (all values are in log10|y| units)
 z_best_1 = z1.max()
 
+# Log-space models, which are the ones used for F1 from Week 7: kappa=1.5 (the starting rule for 2D
+# functions) and the default xi=0.01
 ucb_1_log = upper_confidence_bound(mean_f1_log, std_f1_log, kappa=1.5)
 best_ucb_idx_1_log = np.argmax(np.where(valid_1, ucb_1_log, -np.inf))
 next_point_ucb_1_log = candidates_f1[best_ucb_idx_1_log]
@@ -925,10 +950,11 @@ print("="*60)
 
 y_best_2 = func2_outputs.max()
 
-# Exclude candidates that duplicate (or nearly duplicate) an already-sampled
-# point, so acquisition can't recommend re-querying a point you already have.
+# Exclude candidates within 0.001 of an already-sampled point, so acquisition can't recommend re-querying
+# a point you already have. Added in Week 6 after F1, F4 and F5 repeated points in Weeks 3 and 4.
 valid_2 = unsampled_mask(candidates_f2, func2_inputs)
 
+# kappa=2.0, xi=0.1: kept at 2.0 to keep exploring, as F2 never beat its starting 0.6112 in Weeks 1 to 5
 ucb_2 = upper_confidence_bound(mean_f2, std_f2, kappa=2.0)
 best_ucb_idx_2 = np.argmax(np.where(valid_2, ucb_2, -np.inf))
 next_point_ucb_2 = candidates_f2[best_ucb_idx_2]
@@ -980,10 +1006,11 @@ print("="*60)
 
 y_best_3 = func3_outputs.max()
 
-# Exclude candidates that duplicate (or nearly duplicate) an already-sampled
-# point, so acquisition can't recommend re-querying a point you already have.
+# Exclude candidates within 0.001 of an already-sampled point, so acquisition can't recommend re-querying
+# a point you already have. Added in Week 6 after F1, F4 and F5 repeated points in Weeks 3 and 4.
 valid_3 = unsampled_mask(candidates_f3, func3_inputs)
 
+# kappa=1.5, xi=0.01: lowered from the starting rule of 2.0 to focus on a proposed maximum
 ucb_3 = upper_confidence_bound(mean_f3, std_f3, kappa=1.5)
 best_ucb_idx_3 = np.argmax(np.where(valid_3, ucb_3, -np.inf))
 next_point_ucb_3 = candidates_f3[best_ucb_idx_3]
@@ -1026,7 +1053,8 @@ print(f"  Mean: {mean_f3_rf[best_ei_idx_3_rf]:.6f}")
 print(f"  Std: {std_f3_rf[best_ei_idx_3_rf]:.6f}")
 
 # Local search: F3's best point is already known, so refine inside a small box around it
-# instead of searching the whole range (global picks here just chase uncertain edges).
+# instead of searching the whole range (global picks here just chase uncertain edges). The +/-0.04 box is
+# about a sixth of the typical spacing between points, so it stays local; narrowed to +/-0.02 in Week 8.
 local_f3 = local_candidates(best_points['func3']['input'], half_width=0.04)
 valid_local_3 = unsampled_mask(local_f3, func3_inputs)
 
@@ -1060,10 +1088,11 @@ print("="*60)
 
 y_best_4 = func4_outputs.max()
 
-# Exclude candidates that duplicate (or nearly duplicate) an already-sampled
-# point, so acquisition can't recommend re-querying a point you already have.
+# Exclude candidates within 0.001 of an already-sampled point, so acquisition can't recommend re-querying
+# a point you already have. Added in Week 6 after F1, F4 and F5 repeated points in Weeks 3 and 4.
 valid_4 = unsampled_mask(candidates_f4, func4_inputs)
 
+# kappa=1.5, xi=0.01: lowered from the starting rule of 2.0 to focus on a proposed maximum
 ucb_4 = upper_confidence_bound(mean_f4, std_f4, kappa=1.5)
 best_ucb_idx_4 = np.argmax(np.where(valid_4, ucb_4, -np.inf))
 next_point_ucb_4 = candidates_f4[best_ucb_idx_4]
@@ -1106,7 +1135,7 @@ print(f"  Mean: {mean_f4_rf[best_ei_idx_4_rf]:.6f}")
 print(f"  Std: {std_f4_rf[best_ei_idx_4_rf]:.6f}")
 
 # Local search: F4 has a narrow peak near its best point (neighbours drop sharply), and the
-# global picks went to far-off regions with very negative predictions.
+# global picks went to far-off regions with very negative predictions. Same +/-0.04 box as F3.
 local_f4 = local_candidates(best_points['func4']['input'], half_width=0.04)
 valid_local_4 = unsampled_mask(local_f4, func4_inputs)
 
@@ -1140,10 +1169,11 @@ print("="*60)
 
 y_best_5 = func5_outputs.max()
 
-# Exclude candidates that duplicate (or nearly duplicate) an already-sampled
-# point, so acquisition can't recommend re-querying a point you already have.
+# Exclude candidates within 0.001 of an already-sampled point, so acquisition can't recommend re-querying
+# a point you already have. Added in Week 6 after F1, F4 and F5 repeated points in Weeks 3 and 4.
 valid_5 = unsampled_mask(candidates_f5, func5_inputs)
 
+# kappa=1.5, xi=0.01: lowered from the starting rule of 2.0 to focus on its Week 1 peak
 ucb_5 = upper_confidence_bound(mean_f5, std_f5, kappa=1.5)
 best_ucb_idx_5 = np.argmax(np.where(valid_5, ucb_5, -np.inf))
 next_point_ucb_5 = candidates_f5[best_ucb_idx_5]
@@ -1195,10 +1225,11 @@ print("="*60)
 
 y_best_6 = func6_outputs.max()
 
-# Exclude candidates that duplicate (or nearly duplicate) an already-sampled
-# point, so acquisition can't recommend re-querying a point you already have.
+# Exclude candidates within 0.001 of an already-sampled point, so acquisition can't recommend re-querying
+# a point you already have. Added in Week 6 after F1, F4 and F5 repeated points in Weeks 3 and 4.
 valid_6 = unsampled_mask(candidates_f6, func6_inputs)
 
+# kappa=2.5, xi=0.01: the starting rule for 5D, kept
 ucb_6 = upper_confidence_bound(mean_f6, std_f6, kappa=2.5)
 best_ucb_idx_6 = np.argmax(np.where(valid_6, ucb_6, -np.inf))
 next_point_ucb_6 = candidates_f6[best_ucb_idx_6]
@@ -1250,10 +1281,11 @@ print("="*60)
 
 y_best_7 = func7_outputs.max()
 
-# Exclude candidates that duplicate (or nearly duplicate) an already-sampled
-# point, so acquisition can't recommend re-querying a point you already have.
+# Exclude candidates within 0.001 of an already-sampled point, so acquisition can't recommend re-querying
+# a point you already have. Added in Week 6 after F1, F4 and F5 repeated points in Weeks 3 and 4.
 valid_7 = unsampled_mask(candidates_f7, func7_inputs)
 
+# kappa=1.7, xi=0.01: lowered from the starting rule of 2.5 to focus on a proposed maximum near a new best
 ucb_7 = upper_confidence_bound(mean_f7, std_f7, kappa=1.7)
 best_ucb_idx_7 = np.argmax(np.where(valid_7, ucb_7, -np.inf))
 next_point_ucb_7 = candidates_f7[best_ucb_idx_7]
@@ -1305,10 +1337,11 @@ print("="*60)
 
 y_best_8 = func8_outputs.max()
 
-# Exclude candidates that duplicate (or nearly duplicate) an already-sampled
-# point, so acquisition can't recommend re-querying a point you already have.
+# Exclude candidates within 0.001 of an already-sampled point, so acquisition can't recommend re-querying
+# a point you already have. Added in Week 6 after F1, F4 and F5 repeated points in Weeks 3 and 4.
 valid_8 = unsampled_mask(candidates_f8, func8_inputs)
 
+# kappa=3.0, xi=0.02: reason not recorded
 ucb_8 = upper_confidence_bound(mean_f8, std_f8, kappa=3.0)
 best_ucb_idx_8 = np.argmax(np.where(valid_8, ucb_8, -np.inf))
 next_point_ucb_8 = candidates_f8[best_ucb_idx_8]
@@ -1352,6 +1385,8 @@ print(f"  Std: {std_f8_rf[best_ei_idx_8_rf]:.6f}")
 
 # =============================================================================
 # VISUALIZE ACQUISITION FOR FUNCTION 1
+# For inspection only. The plots use an illustrative kappa of 1.5 and xi of 0.01, not the kappa and xi used
+# for each function's pick above.
 # =============================================================================
 print("\n" + "="*60)
 print("VISUALIZING ACQUISITION: FUNCTION 1")
