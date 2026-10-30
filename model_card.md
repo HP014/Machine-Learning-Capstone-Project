@@ -16,21 +16,21 @@
 
 **How performance is measured.** This is not a standard train/test problem. There are very few points and each new point is only available once I submit it, so I measure two things:
 
-1. **Optimisation outcome:** the best output found so far per function. All eight functions improved over the twelve weeks. All eight set a new best in Week 8, five of the eight did so again in Week 9, three did in Week 10, six did in Week 11, and four did in Week 12 (see the table in `README.md` and `results/figures/fig1_best_so_far.png`).
+1. **Optimisation outcome:** the best output found so far per function. All eight functions improved over the thirteen weeks. All eight set a new best in Week 8, five of the eight did so again in Week 9, three did in Week 10, six did in Week 11, four did in Week 12, and five did in Week 13 (see the table in `README.md` and `results/figures/fig1_best_so_far.png`).
 2. **Prediction quality:** before each weekly query, I recorded the model's predicted output and uncertainty for the point I chose. Once the real output came back, I measured the error in standard deviations, `(actual - predicted) / predicted std`. This is the only out-of-sample check available, because the real output was never used to fit the prediction it is compared with. The log is in `results/prediction_log.csv`.
 
 | Model | Predictions | Within 1 std | Within 2 std | Mean absolute error in std |
 |---|---|---|---|---|
-| GP | 36 | 47% | 78% | 1.51 |
+| GP | 39 | 49% | 79% | 1.44 |
 | Random Forest | 3 | 67% | 100% | 0.60 |
 
-The data covers Weeks 6 to 12 and excludes F1, whose predictions are on a different scale. The Random Forest figures come from only three predictions, so they are not a reliable comparison with the GP. A well-calibrated model would be within one standard deviation about 68% of the time.
+The data covers Weeks 6 to 13 and excludes F1, whose predictions are on a different scale. The Random Forest figures come from only three predictions, so they are not a reliable comparison with the GP. A well-calibrated model would be within one standard deviation about 68% of the time.
 
 ![Prediction error](results/figures/fig5_prediction_error.png)
 
 ## Limitations
 
-- **Very little data.** Each function has between 22 and 52 points, in 2 to 8 dimensions. Every conclusion here is tentative.
+- **Very little data.** Each function has between 23 and 53 points, in 2 to 8 dimensions. Every conclusion here is tentative.
 - **Overconfidence.** The GP was wrong by a large amount for F3, F4 and F7, by up to about 6 standard deviations in earlier weeks, so its uncertainty is often too small.
 - **Assumptions that do not hold for every function.** The GP assumes a smooth function with a moderate output range. F1 breaks this (outputs from about 1e-245 to 1e-3), and neither the GP nor the Random Forest learned anything useful from it on raw values. The log-space version drops the sign of the output, and F1 does change sign.
 - **Random Forest extrapolation.** In Week 6 the Random Forest predicted values far outside anything observed for F4 (a mean of about -6.7 with a standard deviation of about 8.7, against observed values between -1.3 and 0.4).

@@ -1,5 +1,24 @@
 # Changelog
 
+## Final Results - After Week 13
+
+Week 13 was the last query, so there is nothing to propose. This section records the final results against the predictions and the documents refreshed.
+
+**Week 13 results against predictions:** Five functions set a new best on the final query: F2 (0.7419, up from 0.6670), F4 (0.7141, up from 0.6566), F5 (4246.4, up from 3984.7), F7 (2.7544, up from 2.7158) and F8 (9.9746, up from 9.9634). F1, F3 and F6 did not improve. The three GP picks that had a prediction all landed within about one standard deviation: F5 +1.0, F7 -0.4 and F8 -0.4.
+
+- F1: the step back to x2 = 0.577 gave 1.15e-4, just below the best of 1.43e-4. The gain of 1.1x to 1.2x did not appear. Along x1 = 0.5805 there are now three useful points (x2 = 0.577 gives 1.15e-4, 0.5799 gives 1.43e-4 and 0.5919 gives -2.14e-4), so the top of the stripe is close to x2 = 0.58 and the best stays at 1.43e-4.
+- F2: refinement at x2 = 0.9095 gave 0.7419, a gain of 0.075. The curve through the x2 profile had predicted about 0.72, which I had called optimistic, and the result beat it.
+- F3: lowering x3 by 0.006 gave -0.00925, a loss of 0.0038 against the best (-0.0054). This is a smaller loss than the earlier moves (0.007 to 0.0098), so the peak may be a little broader than I had assumed.
+- F4: the probe in a new direction gained 0.058, to 0.7141. The GP had predicted nothing above the best, so this was a direction found by the probe and not by the model.
+- F5: predicted 4242.7 (std 3.7), actual 4246.4. A gain of 262 over the previous best.
+- F6: the repeated step lost 0.0136 (-0.0711 against the best of -0.0575). The step that gained 0.034 in Week 12 did not repeat.
+- F7: predicted 2.7661 (std 0.029), actual 2.7544, a new best (up 0.039).
+- F8: predicted 9.9752 (std 0.0015), actual 9.9746, a new best (up 0.011).
+
+**Final totals:** 279 observations across the eight functions. New bests by week were 3, 3, 3, 0, 2, 1 and 3 in Weeks 1 to 7, then 8, 5, 3, 6, 4 and 5 in Weeks 8 to 13. That is 46 in total, and 31 of them came from Week 8 onwards, after the switch to small steps around each best point. The prediction check now covers 39 GP predictions: 49% within one standard deviation, 79% within two and a mean absolute error of 1.44 standard deviations.
+
+**Documents and figures refreshed:** The README, model card, datasheet and figures now run to Week 13, with Week 13 shown in green on the prediction-error figure. The script loads `Data/Week_13`.
+
 ## Week 13 - Model & Pipeline Changes
 
 **Week 12 results against predictions:** Four functions set a new best: F5 (3984.7, up from 3747.6), F6 (-0.0575, up from -0.0916), F7 (2.7158, up from 2.5988) and F8 (9.9634, up from 9.9489). F1, F2, F3 and F4 did not improve. F5 beat its prediction by 2.4 standard deviations, F7 and F8 landed within one, and F4 missed by 2.8 below.

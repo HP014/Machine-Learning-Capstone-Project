@@ -1,23 +1,23 @@
 # Bayesian Optimisation of Eight Black-Box Functions
 
 ## NON-TECHNICAL EXPLANATION OF YOUR PROJECT
-Imagine eight mystery machines. For each one you pick the settings on a few dials, between two and eight of them, and the machine reports a score. The aim is to find the settings that give the highest score, but you only get one try per machine each week, so every try has to count. This project uses machine learning to study the results so far and suggest which settings to try next, balancing careful tweaks to the best settings with bold tests of unfamiliar ones. Over twelve weeks the best score for every machine improved, in some cases several times over.
+Imagine eight mystery machines. For each one you pick the settings on a few dials, between two and eight of them, and the machine reports a score. The aim is to find the settings that give the highest score, but you only get one try per machine each week, so every try has to count. This project uses machine learning to study the results so far and suggest which settings to try next, balancing careful tweaks to the best settings with bold tests of unfamiliar ones. Over thirteen weeks the best score for every machine improved, in some cases several times over.
 
 ## DATA
 The data comes from eight unknown "black-box" functions that I could only learn about by querying them. Each week I submitted one input for each function and received its output. `[CONFIRM: name of the course/module and who provides the functions, plus any citation your course requires]`
 
-| Function | Inputs | Initial points | Points after Week 12 | Best at start | Best after Week 12 |
+| Function | Inputs | Initial points | Points after Week 13 | Best at start | Best after Week 13 |
 |---|---|---|---|---|---|
-| F1 | 2 | 10 | 22 | 7.71e-16 | 1.43e-04 |
-| F2 | 2 | 10 | 22 | 0.6112 | 0.6670 |
-| F3 | 3 | 15 | 27 | -0.0348 | -0.0054 |
-| F4 | 4 | 30 | 42 | -4.0255 | 0.6566 |
-| F5 | 4 | 20 | 32 | 1088.86 | 3984.69 |
-| F6 | 5 | 20 | 32 | -0.7143 | -0.0575 |
-| F7 | 6 | 30 | 42 | 1.3650 | 2.7158 |
-| F8 | 8 | 40 | 52 | 9.5985 | 9.9634 |
+| F1 | 2 | 10 | 23 | 7.71e-16 | 1.43e-04 |
+| F2 | 2 | 10 | 23 | 0.6112 | 0.7419 |
+| F3 | 3 | 15 | 28 | -0.0348 | -0.0054 |
+| F4 | 4 | 30 | 43 | -4.0255 | 0.7141 |
+| F5 | 4 | 20 | 33 | 1088.86 | 4246.41 |
+| F6 | 5 | 20 | 33 | -0.7143 | -0.0575 |
+| F7 | 6 | 30 | 43 | 1.3650 | 2.7544 |
+| F8 | 8 | 40 | 53 | 9.5985 | 9.9746 |
 
-- Every input value lies between 0 and 1. Outputs are not bounded. There are 271 observations in total.
+- Every input value lies between 0 and 1. Outputs are not bounded. There are 279 observations in total.
 - Outputs appear to be exactly repeatable: querying the same point twice returned identical values.
 - F1 is unusual: its outputs range from about 1e-245 to 1e-3, so almost every point looks like zero.
 - The data is stored cumulatively in `Data/Week_N/function_M/` as `updated_inputs.npy` and `updated_outputs.npy`. Each week's folder contains everything up to that week.
@@ -53,7 +53,7 @@ Each decision below comes with the evidence and what it cost. The week is when t
 - **Week 8: switched F1 to a pattern search (small steps from the best point).** A GP failed, and a single-Gaussian-bump model failed a hold-out test: without the newest point it predicted 1e-31 for a value that was actually about 1e-5.7. F1's outputs are exact, so measuring the direction of improvement directly is reliable. It takes about three weeks, since only one query per week is allowed, but it produced a 12x gain in one week.
 - **Weeks 8 onwards: stopped using the Random Forest for picks.** I added it in Week 6 out of curiosity, to see whether a second model could improve on the GP. In Week 6 the GP-picked functions produced one new best out of four and the Random Forest-picked ones none, and the GP kept producing better points afterwards, so I continued with it. This is a small sample and not a controlled comparison, and I never tuned the Random Forest. Later checks gave a likely reason: a Random Forest averages outputs it has already seen, so it can never predict above the best value found so far, and in the small boxes used from Week 8 its uncertainty was far too wide to rank nearby points (F5: std 468 against 3.4 for the GP).
 - **Week 9: left kappa and xi unchanged.** In a ±0.02 box, moving kappa from 0 to 2 shifted most picks by under 0.03 and cost a few percent of predicted value. F4 did not move at all. Box size mattered more, and every function was improving. If a function stalls for about two weeks, I will widen the box to ±0.04 to ±0.08 and add a small kappa.
-- **Weeks 10 to 12: used line searches and half steps for F4 and F6, and an anisotropic GP for F4.** The GP's picks sat next to a failed point or predicted nothing above the best, so where a step stopped working I halved it or fitted a curve along it. Once F4's line was used up, a GP with a length scale for each input predicted the last three points better than the plain one (errors of 0.14, 0.49 and 0.50 against 0.83, 0.59 and 0.57) and showed that x1 and x2 matter most. These picks are low confidence, and the anisotropic GP was overconfident on one of the three points (5.9 standard deviations).
+- **Weeks 10 to 12: used line searches and half steps for F4 and F6, and an anisotropic GP for F4.** The GP's picks sat next to a failed point or predicted nothing above the best, so where a step stopped working I halved it or fitted a curve along it. Once F4's line was used up, a GP with a length scale for each input predicted the last three points better than the plain one (errors of 0.14, 0.49 and 0.50 against 0.83, 0.59 and 0.57) and showed that x1 and x2 matter most. These picks are low confidence, and the anisotropic GP was overconfident on one of the three points (5.9 standard deviations). In Week 13 a probe in a new direction gained 0.058 on F4, to 0.7141.
 
 ## HYPERPARAMETER OPTIMSATION
 | Function | Kernel (starting length scale) | UCB kappa | EI xi | Why these values |
@@ -77,7 +77,7 @@ Each decision below comes with the evidence and what it cost. The week is when t
 - **Later GP refits** used a floor of 0.05 on the length scale and normalised outputs, after the earlier fits for F2 and F5 collapsed into spiky kernels.
 
 ## RESULTS
-All eight functions improved over the twelve weeks. Every function set a new best in Week 8, five of the eight did so again in Week 9, three did in Week 10, six did in Week 11, and four did in Week 12.
+All eight functions improved over the thirteen weeks. Every function set a new best in Week 8, five of the eight did so again in Week 9, three did in Week 10, six did in Week 11, four did in Week 12, and five did on the final query in Week 13 (F2, F4, F5, F7 and F8). Of the 46 new bests over the whole project, 31 came from Week 8 onwards.
 
 **Fig 1, best output so far by week:** the long flat stretches before Week 8 are the evidence for switching from exploring to exploiting around each best point.
 
@@ -93,13 +93,13 @@ All eight functions improved over the twelve weeks. Every function set a new bes
 
 ![Exploration versus exploitation](results/figures/fig3_exploration_vs_exploitation.png)
 
-- **Prediction quality was mixed.** Comparing each model's prediction with the output that actually came back, the GP's prediction was within one standard deviation 47% of the time (36 predictions). The Random Forest was within one standard deviation in 2 of 3 predictions, which is too few to compare fairly.
+- **Prediction quality was mixed.** Comparing each model's prediction with the output that actually came back, the GP's prediction was within one standard deviation 49% of the time and within two 79% of the time (39 predictions). The Random Forest was within one standard deviation in 2 of 3 predictions, which is too few to compare fairly.
 
 **Fig 5, prediction error:** models that miss by several standard deviations are the reason I treated the GP's uncertainty with caution and read the F5 and F4 picks as a direction, not a confident prediction.
 
 ![Prediction error](results/figures/fig5_prediction_error.png)
 
-- **F1 is a very hard function.** Almost every output is effectively zero, so an ordinary GP learned nothing useful from it. A small-step search finally increased its best value by a factor of about 12 in one week. The next step flipped the sign of the output (-8.4e-5), which shows its structure is finer than the step size, so the search now uses smaller steps. A third point along x1 then showed that the positive stripe is only about 0.0135 wide, and the search is now climbing along it. The first step along the stripe raised the best value by about 6x, to 1.43e-4. The next step overshot and flipped the sign again (-2.1e-4), which puts the top of the stripe between those two points.
+- **F1 is a very hard function.** Almost every output is effectively zero, so an ordinary GP learned nothing useful from it. A small-step search finally increased its best value by a factor of about 12 in one week. The next step flipped the sign of the output (-8.4e-5), which shows its structure is finer than the step size, so the search now uses smaller steps. A third point along x1 then showed that the positive stripe is only about 0.0135 wide, and the search is now climbing along it. The first step along the stripe raised the best value by about 6x, to 1.43e-4. The next step overshot and flipped the sign again (-2.1e-4), which put the top of the stripe between those two points. The final query, a step back to x2 = 0.577, gave 1.15e-4, just below the best, so the best stays at 1.43e-4 and the top of the stripe lies close to x2 = 0.58.
 
 **Fig 4, F1 map:** almost every point is effectively zero with a narrow stripe of signal, which is why I stopped using model-based picks for F1 and switched to a small-step pattern search.
 
@@ -108,7 +108,7 @@ All eight functions improved over the twelve weeks. Every function set a new bes
 What the results show:
 - Models that look confident can be wrong. The GP was too sure of itself for F3, F4 and F7, missing by up to about 6 standard deviations in earlier weeks.
 - Once a good region is found, careful small steps are an efficient way to improve.
-- With only twelve weeks of data, these are best-so-far results, not proof that any function's true maximum has been found.
+- With only thirteen weeks of data, these are best-so-far results, not proof that any function's true maximum has been found.
 
 ## (OPTIONAL: CONTACT DETAILS)
 `[Add a link or email here if you make the repository public, or delete this section.]`
