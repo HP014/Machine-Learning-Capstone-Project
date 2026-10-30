@@ -110,6 +110,8 @@ What the results show:
 - Once a good region is found, careful small steps are an efficient way to improve.
 - With only thirteen weeks of data, these are best-so-far results, not proof that any function's true maximum has been found.
 
+For my reflection on the whole project (how the approach changed, why, and what I would do differently), see the [Retrospective on the BBO capstone project](Retrospective%20on%20the%20BBO%20capstone%20project.md).
+
 ## (OPTIONAL: CONTACT DETAILS)
 `[Add a link or email here if you make the repository public, or delete this section.]`
 
@@ -119,3 +121,4 @@ What the results show:
 - `make_figures.py`: rebuilds every figure in `results/figures/` from the data (`python make_figures.py`).
 - `Data/`: the weekly data. `results/`: figures and a log of past predictions.
 - `CHANGELOG.md`: what changed each week and why. `model_card.md` and `data_sheet.md`: the model card and datasheet.
+- `Retrospective on the BBO capstone project.md`: my reflection on the whole project.
