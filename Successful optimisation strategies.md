@@ -35,7 +35,7 @@ Outcomes matter, and F5's 42% gain is a real result. But outcomes alone mislead.
 - **Check the data before choosing the model.** Heavy-tailed targets such as transaction amounts or fraud scores often need a log transform, as F1 did.
 - **Build safeguards and logs first.** Experiment tracking and duplicate checks stop wasted runs in hyperparameter tuning and in live A/B tests.
 - **Test a model's confidence against outcomes.** Logging predicted against actual values shows whether its uncertainty can be trusted.
-- **Switch phases on evidence.** Explore while information is cheap and refine locally once a good region is found. In my own field of payments, this could tune fraud-model thresholds, where every live test has a cost.
+- **Switch phases on evidence.** Explore while information is cheap and refine locally once a good region is found. In production ML systems, this could tune model thresholds, where every live test has a cost.
 - **Document every decision with its reason.** In a team, that record is what lets someone else audit, reproduce and improve the work.
 
 ## What I noticed in my peers' approaches
