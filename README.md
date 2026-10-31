@@ -97,7 +97,7 @@ Each decision below comes with the evidence and what it cost. The week is when t
 ## HYPERPARAMETER OPTIMSATION
 | Function | Kernel (starting length scale) | UCB kappa | EI xi | Why these values |
 |---|---|---|---|---|
-| F1 (raw models) | RBF (0.3) + white noise | 0.1 | 0.1 | Reason not recorded |
+| F1 (raw models) | RBF (0.3) + white noise | 0.1 | 0.1 | Kappa: a Week 5 test. F1 was flat and UCB kept picking the same point whatever the kernel or kappa, so I tried kappa 0.1 (near pure exploitation) with RBF plus white noise, and the pick did not change. Reason for xi not recorded |
 | F1 (log models, from Week 7) | RBF (0.3) + white noise | 1.5 | 0.01 | Starting rule for 2D functions, default xi |
 | F2 | RBF (0.2) | 2.0 | 0.1 | Kept at 2.0 to keep exploring, as F2 never beat its starting 0.6112 in Weeks 1 to 5 |
 | F3 | Matern 2.5 (0.1) | 1.5 | 0.01 | Lowered from the rule's 2.0 to focus on a proposed maximum |
@@ -105,7 +105,7 @@ Each decision below comes with the evidence and what it cost. The week is when t
 | F5 | Matern 1.5 (0.2) | 1.5 | 0.01 | Lowered from the rule's 2.0 to focus on its Week 1 peak |
 | F6 | Matern 1.5 (0.1) | 2.5 | 0.01 | Starting rule for 5D, kept |
 | F7 | Matern 1.5 (0.15) | 1.7 | 0.01 | Lowered from the rule's 2.5 to focus on a proposed maximum near a new best |
-| F8 | Matern 1.5 (0.2) | 3.0 | 0.02 | Reason not recorded |
+| F8 | Matern 1.5 (0.2) | 3.0 | 0.02 | Raised from the rule's 2.5 and 0.01 in Week 3 to explore more aggressively after a slightly lower output, then kept |
 
 - **GP kernel parameters** (length scale, amplitude, noise) are fitted automatically by maximising the log marginal likelihood, with 10 random restarts. The kernel type and starting length scale were chosen by hand. I assigned the kernels in order of function number: the smoother RBF kernel for the two 2D functions, which are the easiest to model, and Matern kernels for the rest. RBF assumes a very smooth function, while Matern allows a rougher one, and the higher-dimensional functions have sparser data and are less predictable. The starting length scales (0.1 to 0.3) are only starting points, because the fit then optimises them.
 - **kappa and xi** control exploration against exploitation. My overall plan was to explore in the first few weeks and exploit in the later weeks. I started with a rule based on dimension (kappa 1.5 for the 2D functions, 2.0 for F3 to F5, 2.5 for F6 to F8, with xi at 0.01), because higher-dimensional functions have sparser data and need more exploration. Where I lowered kappa, it was to focus on a proposed maximum. The later exploitation came mainly from searching small boxes around each best point (Week 8 onwards), not from changing kappa, because I checked how sensitive the picks were: inside a small box around the best point, raising kappa from 0 to 2 moved most picks by under 0.03 and lowered the predicted value by a small amount, so the box size mattered more than kappa. I set the values by judgement and did not run a search, because each function allows only one real evaluation per week.
@@ -225,6 +225,3 @@ Then, from the repository root:
 
 ## LICENCE
 The code in this repository is released under the MIT licence (see `LICENSE`). The initial data points were supplied by the course and remain the course's material, so the licence does not cover them.
-
-## (OPTIONAL: CONTACT DETAILS)
-`[Add a link or email here if you make the repository public, or delete this section.]`

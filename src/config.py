@@ -14,8 +14,10 @@ LOCAL_HALF_WIDTH = 0.04  # box around the best point for the local search (F3 an
 
 FUNCTION_SETTINGS = {
     # F1: white noise is a precaution, not a measured noise level, as nearly all F1 outputs are near zero.
-    # The reason for kappa 0.1 and xi 0.1 on the raw models is not recorded. The log-space models (used for F1 from
-    # Week 7) follow the starting rule for 2D functions, with the default xi.
+    # Raw models: kappa 0.1 came from a Week 5 test. F1 was flat and UCB kept picking the same point whatever the
+    # kernel or kappa, so I tried kappa 0.1 (near pure exploitation) with RBF plus white noise, and the pick did not
+    # change. The reason for xi 0.1 is not recorded. The log-space models (used for F1 from Week 7) follow the
+    # starting rule for 2D functions, with the default xi.
     1: dict(dim=2, kernel="rbf", length_scale=0.3, nu=None, white_noise=True, kappa=0.1, xi=0.1,
             kappa_log=1.5, xi_log=0.01, fit_label="2D, RBF length_scale=0.3", local_search=False),
     # F2: kept high to keep exploring, as F2 never beat its starting 0.6112 in Weeks 1 to 5.
@@ -37,7 +39,8 @@ FUNCTION_SETTINGS = {
     # F7: kappa lowered from the starting rule to focus on a proposed maximum near a new best.
     7: dict(dim=6, kernel="matern", length_scale=0.15, nu=1.5, white_noise=False, kappa=1.7, xi=0.01,
             fit_label="6D, Matern nu=1.5, length_scale=0.15", local_search=False),
-    # F8: the reason for these kappa and xi values is not recorded.
+    # F8: raised from the starting rule (2.5, 0.01) in Week 3 to explore more aggressively after a slightly lower
+    # output, then kept.
     8: dict(dim=8, kernel="matern", length_scale=0.2, nu=1.5, white_noise=False, kappa=3.0, xi=0.02,
             fit_label="8D, Matern nu=1.5, length_scale=0.2", local_search=False),
 }
