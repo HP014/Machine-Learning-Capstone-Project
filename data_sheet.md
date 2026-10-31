@@ -2,8 +2,8 @@
 
 ## Motivation
 
-- **For what purpose was the dataset created?** It consists of evaluations of eight unknown "black-box" functions, used here to practise sample-efficient optimisation when each evaluation is limited. `[CONFIRM: the course's stated purpose for the functions]`
-- **Who created the dataset, and who funded it?** The functions are provided through the course. `[CONFIRM: the team or institution that created them and who funded the work, if known]` The outputs for my own queries were returned by the course's system, and I created the queries.
+- **For what purpose was the dataset created?** It consists of evaluations of eight unknown "black-box" functions, used here to practise sample-efficient optimisation when each evaluation is limited. The course frames the task as solving a real-world optimisation challenge, where testing is expensive, time-consuming or resource-intensive (for example testing drug formulations with limited clinical trials, tuning manufacturing parameters with costly prototypes, or tuning a model that takes hours to train), and as building a portfolio piece that shows advanced optimisation techniques.
+- **Who created the dataset, and who funded it?** The eight functions and the initial points were supplied by the course material of the Imperial College London Department of Computing and Imperial Executive Education, Professional Certificate in Machine Learning and Artificial Intelligence, Black-Box Optimisation Capstone Project. The course material does not say who built the functions or who funded the work. The outputs for my own queries were returned by the course's system, and I created the queries.
 
 ## Composition
 
@@ -26,7 +26,7 @@
 
 ## Collection process
 
-- **How was the data acquired?** The initial points for each function were provided at the start `[CONFIRM: how the initial points were generated and supplied]`. After that, each week I submitted one new input per function and received its output.
+- **How was the data acquired?** The initial points for each function were supplied by the course at the start, as NumPy files (`initial_inputs.npy` and `initial_outputs.npy`). The course material does not say how they were generated, and their counts (10, 10, 15, 30, 20, 20, 30 and 40) match the course FAQ. After that, each week I submitted one new input per function and received its output.
 - **Sampling strategy:** The initial points were supplied. Later points were chosen by me using Bayesian optimisation, so they concentrate in regions that looked promising and are not a uniform sample.
 - **Time frame:** Thirteen weekly rounds, from about August to October 2026.
 
@@ -43,9 +43,10 @@
 
 ## Distribution
 
-- **How has the dataset already been distributed?** It is stored in this repository. `[CONFIRM: whether the course allows the data to be shared publicly before making the repository public]`
-- **Is it subject to any copyright, licence or terms of use?** `[CONFIRM: any licence or terms from the course]`
+- **How has the dataset already been distributed?** It is stored in this repository, which is public. The course's initial points are included with attribution to the course, and they remain the course's material. The rest is my own queries and the outputs returned for them.
+- **Is it subject to any copyright, licence or terms of use?** The course material states no licence or terms of use for the data. The initial points remain the course's, and the data is shared here for educational, non-commercial purposes as part of a course portfolio. A licence for my own queries, code and documents is still to be added to the repository.
 
 ## Maintenance
 
-- **Who maintains the dataset?** Hilton Patel (GitHub: HP014), who adds one new week of data after each round.
+- **Who maintains the dataset?** Hilton Patel (GitHub: HP014).
+- **Will it be updated?** No. Week 13 was the final round, so the data is complete. Each `Data/Week_N` folder is an unchanged snapshot, and pipeline changes are recorded in `CHANGELOG.md`.

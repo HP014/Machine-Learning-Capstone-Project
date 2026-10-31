@@ -4,7 +4,9 @@
 Imagine eight mystery machines. For each one you pick the settings on a few dials, between two and eight of them, and the machine reports a score. The aim is to find the settings that give the highest score, but you only get one try per machine each week, so every try has to count. This project uses machine learning to study the results so far and suggest which settings to try next, balancing careful tweaks to the best settings with bold tests of unfamiliar ones. Over thirteen weeks the best score for every machine improved, in some cases several times over.
 
 ## DATA
-The data comes from eight unknown "black-box" functions that I could only learn about by querying them. Each week I submitted one input for each function and received its output. `[CONFIRM: name of the course/module and who provides the functions, plus any citation your course requires]`
+The data comes from eight unknown "black-box" functions that I could only learn about by querying them. Each week I submitted one input for each function and received its output.
+
+**Source and attribution:** the eight functions and the initial data points were supplied by the course material of the Imperial College London Department of Computing and Imperial Executive Education, Professional Certificate in Machine Learning and Artificial Intelligence, Black-Box Optimisation Capstone Project. The initial points came as NumPy files (`initial_inputs.npy` and `initial_outputs.npy` for each function), described in Mini-lesson 12.8 of the course. They are small, so they are stored in this repository: the first rows of each function's arrays in `Data/` are those initial points (10, 10, 15, 30, 20, 20, 30 and 40 rows), and they remain the course's material. The rows after them are my own weekly queries and the outputs the course returned.
 
 | Function | Inputs | Initial points | Points after Week 13 | Best at start | Best after Week 13 |
 |---|---|---|---|---|---|
@@ -27,6 +29,12 @@ See `data_sheet.md` for the full datasheet.
 
 ## MODEL
 I used **Bayesian optimisation**: fit a model to the points so far, then use it to choose the next point to query.
+
+**Why Bayesian optimisation:**
+- **Queries are scarce.** Each function allowed one real evaluation per week, so only 13 queries on top of the 10 to 40 starting points. Random or grid search would waste most of them, especially with up to 8 inputs.
+- **The function is a black box.** There is no formula and no gradient, so gradient-based methods cannot be used. Bayesian optimisation only needs inputs and outputs.
+- **It learns from every result.** The model is refitted after each query and gives an uncertainty as well as a prediction, which is what lets me balance exploring unfamiliar regions against refining the best one.
+- **It matches the problem type.** The course recommends it when testing is expensive or slow, as in testing drug formulations with limited clinical trials, tuning manufacturing parameters with costly prototypes, or tuning a model that takes hours to train.
 
 - **Gaussian Process (GP)** surrogate (scikit-learn), which predicts the output and how uncertain that prediction is. I chose it because it works well with very few points and gives a usable uncertainty.
 - **Random Forest** surrogate (200 trees), added as a second opinion. Its uncertainty is the spread of the individual trees' predictions. I chose it because it is far less sensitive to extreme output scales and rough landscapes.
@@ -79,6 +87,21 @@ Each decision below comes with the evidence and what it cost. The week is when t
 ## RESULTS
 All eight functions improved over the thirteen weeks. Every function set a new best in Week 8, five of the eight did so again in Week 9, three did in Week 10, six did in Week 11, four did in Week 12, and five did on the final query in Week 13 (F2, F4, F5, F7 and F8). Of the 46 new bests over the whole project, 31 came from Week 8 onwards.
 
+**Best input and output found for each function** (inputs are in the submission format x1-x2-...-xn):
+
+| Function | Best input | Best output | Found in week |
+|---|---|---|---|
+| F1 | 0.580530-0.579941 | 1.43e-04 | 11 |
+| F2 | 0.699500-0.909500 | 0.7419 | 13 |
+| F3 | 0.401915-0.392969-0.455665 | -0.0054 | 9 |
+| F4 | 0.361506-0.417260-0.411229-0.408367 | 0.7141 | 13 |
+| F5 | 0.443723-0.974215-1.000000-1.000000 | 4246.41 | 13 |
+| F6 | 0.457292-0.383089-0.649005-0.785017-0.140272 | -0.0575 | 12 |
+| F7 | 0.046509-0.182924-0.282867-0.276940-0.284300-0.674593 | 2.7544 | 13 |
+| F8 | 0.177156-0.134345-0.109926-0.135300-0.935393-0.535055-0.174600-0.640185 | 9.9746 | 13 |
+
+**A note on the input range.** The course FAQ gives 0.000000 to 0.999999 as the valid range. For F5 I submitted exactly 1.000000 for x3 and x4 in Weeks 8 to 13, and for F7 x1 = 0.000000 in Week 10, and the portal accepted them. F5's best point therefore sits on the boundary of the search space, and its true peak may lie at or beyond it.
+
 **Fig 1, best output so far by week:** the long flat stretches before Week 8 are the evidence for switching from exploring to exploiting around each best point.
 
 ![Best output so far by week](results/figures/fig1_best_so_far.png)
@@ -111,6 +134,22 @@ What the results show:
 - With only thirteen weeks of data, these are best-so-far results, not proof that any function's true maximum has been found.
 
 For my reflection on the whole project (how the approach changed, why, and what I would do differently), see the [Retrospective on the BBO capstone project](Retrospective%20on%20the%20BBO%20capstone%20project.md). For the strategies that worked, the ones that failed and what I learnt from my peers, see [Successful optimisation strategies](Successful%20optimisation%20strategies.md).
+
+## CHALLENGES AND KEY INSIGHTS
+**Challenges**
+- **One query per function per week.** There was little room to test an idea, so methods were checked on past data and with small steps before use.
+- **F1's extreme scale.** Outputs ranged from 1e-245 to 1e-3, so models fitted to the raw values could not tell points apart. It took until Week 7 to model the logarithm, and a pattern search later.
+- **Overconfident models.** The Gaussian Process was within one standard deviation only 49% of the time, so its predictions were read as directions and not as forecasts.
+- **Wasted queries.** Four early queries were exact repeats, because nothing stopped the acquisition functions proposing a point I had already sampled.
+- **Narrow peaks and thin data.** F2, F3 and F4 had sharp peaks, and the 4 to 8 dimensional functions were sparsely sampled, so random candidate search was coarse.
+
+**Key insights**
+- Exploiting around the best point worked best: 31 of the 46 new bests came after the Week 8 switch to small steps.
+- When a model's guidance failed, measuring the function directly (line searches, half steps, a pattern search) was more reliable than trusting it.
+- Understanding the data mattered more than a fancier model: the log transform for F1 was the most effective single change.
+- Cheap safeguards and a written reason for every weekly decision (see `CHANGELOG.md`) saved queries and made the work easy to retrace.
+
+The two write-ups, [Retrospective on the BBO capstone project](Retrospective%20on%20the%20BBO%20capstone%20project.md) and [Successful optimisation strategies](Successful%20optimisation%20strategies.md), give the full story.
 
 ## (OPTIONAL: CONTACT DETAILS)
 `[Add a link or email here if you make the repository public, or delete this section.]`
