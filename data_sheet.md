@@ -33,7 +33,7 @@
 ## Preprocessing/cleaning/labelling
 
 - **Was any preprocessing done?** No cleaning or labelling was applied. The stored arrays contain the raw inputs and outputs exactly as received. Some models transform outputs internally (for example, F1 is modelled on the log of its absolute output), but the stored data is unchanged.
-- **Was the raw data saved?** Yes. The stored arrays are the raw data, saved cumulatively, so each week's folder contains everything up to that week (`Data/Week_N/function_M/updated_inputs.npy` and `updated_outputs.npy`).
+- **Was the raw data saved?** Yes. The stored arrays are the raw data, saved cumulatively, so each week's folder contains everything up to that week (`data/Week_N/function_M/updated_inputs.npy` and `updated_outputs.npy`).
 
 ## Uses
 
@@ -49,4 +49,4 @@
 ## Maintenance
 
 - **Who maintains the dataset?** Hilton Patel (GitHub: HP014).
-- **Will it be updated?** No. Week 13 was the final round, so the data is complete. Each `Data/Week_N` folder is an unchanged snapshot, and pipeline changes are recorded in `CHANGELOG.md`.
+- **Will it be updated?** No. Week 13 was the final round, so the data is complete. Each `data/Week_N` folder is an unchanged snapshot, and pipeline changes are recorded in `CHANGELOG.md`.

@@ -1,6 +1,6 @@
 """
 Alternative surrogate models for Bayesian optimization, for use alongside the
-Gaussian Process models in "Improved RA_12_1.py". Each fit_* function returns
+Gaussian Process models in pipeline.py. Each fit_* function returns
 a fitted model; each predict_* function returns (mean, std) so the existing
 acquisition functions (upper_confidence_bound, expected_improvement) in
 plotting_utils.py can be reused unchanged.

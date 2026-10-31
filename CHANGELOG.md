@@ -1,5 +1,14 @@
 # Changelog
 
+## Repository restructure - After Week 13
+
+No result or pick changed. The code was reorganised so that anyone can clone the repository and run it.
+
+- **Folders:** `Data/` became `data/`. The code moved into `src/`, two notebooks were added in `notebooks/`, the extra analysis scripts went into `scripts/`, and `requirements.txt` was added. File names from earlier weeks that appear below (`surrogate_models.py`, `plotting_utils.py`) are now in `src/`.
+- **The weekly script:** `Improved RA_12_1.py` (eight near-identical blocks and fixed `C:\Users\...` paths) became `src/pipeline.py`, which loops over the functions, with the per-function settings and their reasons in `src/config.py`. The old code that appended a week's data by hand became `append_week()` in `src/data_io.py`, which refuses to overwrite an existing week.
+- **Checked:** the new pipeline printed exactly the same 478 lines as the old script on the Week 13 data (apart from the old script's own printout of the Week 13 queries), the notebook printed the same lines again, and the figures and prediction log rebuilt byte for byte identical.
+- **Scripts:** the working scripts used for the exploit searches, curve fits, anisotropic Gaussian Process test, F6 probe, Random Forest check and kappa check were cleaned up and added. `exploit_search.py`, `anisotropic_gp_check.py`, `rf_box_check.py`, `f6_gradient_probe.py`, `local_quadratic_check.py` and `prediction_check.py` (for Week 13) reproduce the original scripts' numbers. `kappa_sensitivity.py` was written for this and reproduces the README's figures for Week 8 (for example F2's predicted value falling from 0.660 to 0.616 and F4's pick not moving).
+
 ## Final Results - After Week 13
 
 Week 13 was the last query, so there is nothing to propose. This section records the final results against the predictions and the documents refreshed.

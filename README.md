@@ -6,7 +6,7 @@ Imagine eight mystery machines. For each one you pick the settings on a few dial
 ## DATA
 The data comes from eight unknown "black-box" functions that I could only learn about by querying them. Each week I submitted one input for each function and received its output.
 
-**Source and attribution:** the eight functions and the initial data points were supplied by the course material of the Imperial College London Department of Computing and Imperial Executive Education, Professional Certificate in Machine Learning and Artificial Intelligence, Black-Box Optimisation Capstone Project. The initial points came as NumPy files (`initial_inputs.npy` and `initial_outputs.npy` for each function), described in Mini-lesson 12.8 of the course. They are small, so they are stored in this repository: the first rows of each function's arrays in `Data/` are those initial points (10, 10, 15, 30, 20, 20, 30 and 40 rows), and they remain the course's material. The rows after them are my own weekly queries and the outputs the course returned.
+**Source and attribution:** the eight functions and the initial data points were supplied by the course material of the Imperial College London Department of Computing and Imperial Executive Education, Professional Certificate in Machine Learning and Artificial Intelligence, Black-Box Optimisation Capstone Project. The initial points came as NumPy files (`initial_inputs.npy` and `initial_outputs.npy` for each function), described in Mini-lesson 12.8 of the course. They are small, so they are stored in this repository: the first rows of each function's arrays in `data/` are those initial points (10, 10, 15, 30, 20, 20, 30 and 40 rows), and they remain the course's material. The rows after them are my own weekly queries and the outputs the course returned.
 
 | Function | Inputs | Initial points | Points after Week 13 | Best at start | Best after Week 13 |
 |---|---|---|---|---|---|
@@ -22,7 +22,7 @@ The data comes from eight unknown "black-box" functions that I could only learn 
 - Every input value lies between 0 and 1. Outputs are not bounded. There are 279 observations in total.
 - Repeated queries of F1, F4 and F5 returned identical values, so those functions look exactly repeatable. The course describes F2's output as noisy, and I never repeated an F2 query, so I could not check it.
 - F1 is unusual: its outputs range from about 1e-245 to 1e-3, so almost every point looks like zero.
-- The data is stored cumulatively in `Data/Week_N/function_M/` as `updated_inputs.npy` and `updated_outputs.npy`. Each week's folder contains everything up to that week.
+- The data is stored cumulatively in `data/Week_N/function_M/` as `updated_inputs.npy` and `updated_outputs.npy`. Each week's folder contains everything up to that week.
 - Four rows are repeated queries (one in F1, one in F4, two in F5) from before the duplicate safeguard was added. They have been kept.
 
 **Mini-lesson 12.8: Data and descriptions of functions for Bayesian optimisation competition**
@@ -91,7 +91,7 @@ Each decision below comes with the evidence and what it cost. The week is when t
 - **Week 8: refitted the GPs with a length-scale floor of 0.05 and normalised outputs.** The previous fits for F2 and F5 collapsed into spiky kernels (length scales of 0.0085 and 1e-5) that made local predictions meaningless. The floor stops the model fitting very sharp features if they are real.
 - **Week 8: switched F1 to a pattern search (small steps from the best point).** A GP failed, and a single-Gaussian-bump model failed a hold-out test: without the newest point it predicted 1e-31 for a value that was actually about 1e-5.7. F1's outputs are exact, so measuring the direction of improvement directly is reliable. It takes about three weeks, since only one query per week is allowed, but it produced a 12x gain in one week.
 - **Weeks 8 onwards: stopped using the Random Forest for picks.** I added it in Week 6 out of curiosity, to see whether a second model could improve on the GP. In Week 6 the GP-picked functions produced one new best out of four and the Random Forest-picked ones none, and the GP kept producing better points afterwards, so I continued with it. This is a small sample and not a controlled comparison, and I never tuned the Random Forest. Later checks gave a likely reason: a Random Forest averages outputs it has already seen, so it can never predict above the best value found so far, and in the small boxes used from Week 8 its uncertainty was far too wide to rank nearby points (F5: std 468 against 3.4 for the GP).
-- **Week 9: left kappa and xi unchanged.** In a ±0.02 box, moving kappa from 0 to 2 shifted most picks by under 0.03 and cost a few percent of predicted value. F4 did not move at all. Box size mattered more, and every function was improving. If a function stalls for about two weeks, I will widen the box to ±0.04 to ±0.08 and add a small kappa.
+- **Week 9: left kappa and xi unchanged.** In a ±0.02 box, moving kappa from 0 to 2 shifted most picks by under 0.03 and cost a small amount of predicted value. F4 did not move at all. Box size mattered more, and every function was improving. If a function stalls for about two weeks, I will widen the box to ±0.04 to ±0.08 and add a small kappa.
 - **Weeks 10 to 12: used line searches and half steps for F4 and F6, and an anisotropic GP for F4.** The GP's picks sat next to a failed point or predicted nothing above the best, so where a step stopped working I halved it or fitted a curve along it. Once F4's line was used up, a GP with a length scale for each input predicted the last three points better than the plain one (errors of 0.14, 0.49 and 0.50 against 0.83, 0.59 and 0.57) and showed that x1 and x2 matter most. These picks are low confidence, and the anisotropic GP was overconfident on one of the three points (5.9 standard deviations). In Week 13 a probe in a new direction gained 0.058 on F4, to 0.7141.
 
 ## HYPERPARAMETER OPTIMSATION
@@ -108,7 +108,7 @@ Each decision below comes with the evidence and what it cost. The week is when t
 | F8 | Matern 1.5 (0.2) | 3.0 | 0.02 | Reason not recorded |
 
 - **GP kernel parameters** (length scale, amplitude, noise) are fitted automatically by maximising the log marginal likelihood, with 10 random restarts. The kernel type and starting length scale were chosen by hand. I assigned the kernels in order of function number: the smoother RBF kernel for the two 2D functions, which are the easiest to model, and Matern kernels for the rest. RBF assumes a very smooth function, while Matern allows a rougher one, and the higher-dimensional functions have sparser data and are less predictable. The starting length scales (0.1 to 0.3) are only starting points, because the fit then optimises them.
-- **kappa and xi** control exploration against exploitation. My overall plan was to explore in the first few weeks and exploit in the later weeks. I started with a rule based on dimension (kappa 1.5 for the 2D functions, 2.0 for F3 to F5, 2.5 for F6 to F8, with xi at 0.01), because higher-dimensional functions have sparser data and need more exploration. Where I lowered kappa, it was to focus on a proposed maximum. The later exploitation came mainly from searching small boxes around each best point (Week 8 onwards), not from changing kappa, because I checked how sensitive the picks were: inside a small box around the best point, raising kappa from 0 to 2 moved most picks by under 0.03 and lowered the predicted value by a few percent, so the box size mattered more than kappa. I set the values by judgement and did not run a search, because each function allows only one real evaluation per week.
+- **kappa and xi** control exploration against exploitation. My overall plan was to explore in the first few weeks and exploit in the later weeks. I started with a rule based on dimension (kappa 1.5 for the 2D functions, 2.0 for F3 to F5, 2.5 for F6 to F8, with xi at 0.01), because higher-dimensional functions have sparser data and need more exploration. Where I lowered kappa, it was to focus on a proposed maximum. The later exploitation came mainly from searching small boxes around each best point (Week 8 onwards), not from changing kappa, because I checked how sensitive the picks were: inside a small box around the best point, raising kappa from 0 to 2 moved most picks by under 0.03 and lowered the predicted value by a small amount, so the box size mattered more than kappa. I set the values by judgement and did not run a search, because each function allows only one real evaluation per week.
 - **White noise (F1 only):** added in Week 5 to keep the fits stable and to allow for noise in the outputs. Almost all of F1's results were close to zero, so I tried adding something new there to stop the fit chasing tiny differences between near-zero values. Repeated F1 queries returned identical outputs, so it is a precaution and not a measured noise level. The other functions' GPs do not include it.
 - **Random Forest:** 200 trees, fixed random seed (42), other settings left at the scikit-learn defaults. I used more trees than the default of 100 because the uncertainty is the spread across trees, so more trees give a steadier estimate, and it costs little with this little data. I did not tune it.
 - **10,000 random candidates:** a GP prediction is cheap, so 10,000 gives decent coverage in 2 to 3 dimensions. It is coarse in 8 dimensions, which is listed as a limitation in the model card.
@@ -182,19 +182,48 @@ For my reflection on the whole project (how the approach changed, why, and what 
 
 The two write-ups, [Retrospective on the BBO capstone project](Retrospective%20on%20the%20BBO%20capstone%20project.md) and [Successful optimisation strategies](Successful%20optimisation%20strategies.md), give the full story.
 
+## HOW TO RUN IT
+Tested with Python 3.12. Clone the repository and install the requirements:
+
+```bash
+git clone https://github.com/HP014/Machine-Learning-Capstone-Project.git
+cd Machine-Learning-Capstone-Project
+pip install -r requirements.txt
+```
+
+Then, from the repository root:
+- **The method, step by step:** open `notebooks/01_bayesian_optimisation_pipeline.ipynb` (for example with `jupyter lab`) and run the cells from top to bottom, once. Or run it as a script with `python src/pipeline.py`. It reads the latest week in `data/` and prints the proposed next points for all eight functions. It never writes to `data/`.
+- **The results and figures:** open `notebooks/02_results_and_figures.ipynb`, or run `python src/figures.py` to rebuild every figure in `results/figures/` and the prediction log.
+- **The extra analysis behind the weekly decisions:** run `python scripts/<name>.py` for any script in the table below. Most take `--week N` to choose which week of data to use.
+
+| Script | What it does | Used for |
+|---|---|---|
+| `exploit_search.py` | Refits the Gaussian Process and searches ±0.02 and ±0.04 boxes around each best point | The exploit searches from Week 8 |
+| `profile_fits.py` | Fits a curve along a line of recent steps to place the next probe | F1, F2, F3, F4 and F6 probes |
+| `anisotropic_gp_check.py` | Compares a Gaussian Process with a length scale per input against the plain one | F4, Week 12 |
+| `local_quadratic_check.py` | Leave-one-out test of a local quadratic fit (tried and dropped) | F3, F4 and F6, Week 12 |
+| `f6_gradient_probe.py` | Gaussian Process gradient at F6's best, with the used-up directions removed | F6, Week 12 |
+| `rf_box_check.py` | Shows the Random Forest is no use inside a small box | Why it was set aside from Week 8 |
+| `kappa_sensitivity.py` | Shows how little kappa moves a pick inside a small box | Leaving kappa alone from Week 9 |
+| `prediction_check.py` | Predicts a week's query from the data before it and gives the error in standard deviations | The prediction log (reproduces the Week 13 entries) |
+| `check_queries.py` | Checks a week's queries for repeats, range and distance from the best | Before each submission |
+
+## REPOSITORY CONTENTS
+- `data/`: the weekly data, one folder per week (`Week_1` to `Week_13`), each with a folder per function holding `updated_inputs.npy` and `updated_outputs.npy`.
+- `src/`: the code. `pipeline.py` is the weekly method (fit, predict, score, propose). `config.py` holds the settings for each function. `data_io.py` and `paths.py` load the data without any machine-specific paths. `surrogate_models.py` and `plotting_utils.py` hold the Random Forest, log-space and acquisition helpers. `figures.py` rebuilds the figures.
+- `notebooks/`: `01_bayesian_optimisation_pipeline.ipynb` (the method) and `02_results_and_figures.ipynb` (the results), both with their outputs saved.
+- `scripts/`: the extra analysis scripts in the table above.
+- `results/`: the figures and a log of past predictions.
+- `requirements.txt`: the packages and versions the code was tested with.
+- `CHANGELOG.md`: what changed each week and why.
+- `model_card.md` and `data_sheet.md`: the model card and datasheet.
+- `References.md`: the papers and libraries my approach rests on, how each is used, and a list of sources.
+- `Retrospective on the BBO capstone project.md`: my reflection on the whole project.
+- `Successful optimisation strategies.md`: my reflection on which strategies worked, why, and what I learnt from my peers.
+- `LICENSE`: the MIT licence for the code.
+
 ## LICENCE
 The code in this repository is released under the MIT licence (see `LICENSE`). The initial data points were supplied by the course and remain the course's material, so the licence does not cover them.
 
 ## (OPTIONAL: CONTACT DETAILS)
 `[Add a link or email here if you make the repository public, or delete this section.]`
-
-## REPOSITORY CONTENTS
-- `Improved RA_12_1.py`: the weekly script that loads the data, fits the models and prints the next candidate points. It still uses fixed file paths and is due to be tidied. The final-round exploit searches, the F1 step search and the kappa sensitivity check were run as separate working scripts that have not yet been added to the repository.
-- `plotting_utils.py`, `surrogate_models.py`: acquisition functions, plotting helpers, the Random Forest and log-space helpers.
-- `make_figures.py`: rebuilds every figure in `results/figures/` from the data (`python make_figures.py`).
-- `Data/`: the weekly data. `results/`: figures and a log of past predictions.
-- `References.md`: the papers and libraries my approach rests on, how each is used, and a list of sources.
-- `LICENSE`: the MIT licence for the code.
-- `CHANGELOG.md`: what changed each week and why. `model_card.md` and `data_sheet.md`: the model card and datasheet.
-- `Retrospective on the BBO capstone project.md`: my reflection on the whole project.
-- `Successful optimisation strategies.md`: my reflection on which strategies worked, why, and what I learnt from my peers.

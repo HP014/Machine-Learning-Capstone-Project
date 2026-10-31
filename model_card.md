@@ -5,7 +5,7 @@
 - **Name:** Adaptive GP/RF Bayesian optimisation.
 - **Type:** a sequential, model-based optimiser for expensive black-box functions, with a person choosing between the model suggestions each week (Bayesian optimisation with a human in the loop).
 - **Version and status:** one approach that changed over thirteen weeks. This card describes it as it stood after the final round (Week 13). Section "How the approach evolved" lists the changes.
-- **Code:** `Improved RA_12_1.py` (weekly pipeline), `surrogate_models.py`, `plotting_utils.py` and `make_figures.py`.
+- **Code:** `src/pipeline.py` (the weekly method), `src/config.py`, `src/surrogate_models.py`, `src/plotting_utils.py` and `src/figures.py`, run through `notebooks/01_bayesian_optimisation_pipeline.ipynb`. The extra searches behind the weekly choices are in `scripts/`.
 - **Author:** Hilton Patel (GitHub: HP014).
 
 ## Intended Use

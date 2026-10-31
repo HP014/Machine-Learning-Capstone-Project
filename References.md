@@ -12,9 +12,9 @@ Bayesian optimisation is a well-established method for problems where each evalu
 
 **Kernels (RBF and Matern).** The RBF kernel assumes a very smooth function, and the Matern kernel allows a rougher one, with a smoothness setting (nu) of 2.5 or 1.5 here. Rasmussen and Williams (2006) describe both. I used RBF for the two 2D functions and Matern for the rest, because the higher-dimensional functions are sparser and less predictable. A white-noise kernel was added for F1 only.
 
-**Upper Confidence Bound (UCB).** The score is the predicted mean plus kappa times the standard deviation. Srinivas et al. (2010) analyse this rule for Gaussian Processes (GP-UCB) and show how kappa controls the trade-off between exploration and exploitation. In the code it is `upper_confidence_bound(mu, sigma, kappa)` in `plotting_utils.py`.
+**Upper Confidence Bound (UCB).** The score is the predicted mean plus kappa times the standard deviation. Srinivas et al. (2010) analyse this rule for Gaussian Processes (GP-UCB) and show how kappa controls the trade-off between exploration and exploitation. In the code it is `upper_confidence_bound(mu, sigma, kappa)` in `src/plotting_utils.py`.
 
-**Expected Improvement (EI).** The score is the expected amount by which a point beats the best value so far, with a margin xi. Jones, Schonlau and Welch (1998) introduced it in their Efficient Global Optimization method. It is more cautious than UCB, so I used both together. In the code it is `expected_improvement(mu, sigma, y_best, xi)` in `plotting_utils.py`.
+**Expected Improvement (EI).** The score is the expected amount by which a point beats the best value so far, with a margin xi. Jones, Schonlau and Welch (1998) introduced it in their Efficient Global Optimization method. It is more cautious than UCB, so I used both together. In the code it is `expected_improvement(mu, sigma, y_best, xi)` in `src/plotting_utils.py`.
 
 **Random Forest (second surrogate).** Breiman (2001) describes Random Forests. A forest has no built-in uncertainty, so I used the standard deviation of the individual trees' predictions. It was used in Week 6 and set aside afterwards (see the model card for why).
 
