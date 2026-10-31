@@ -20,12 +20,43 @@ The data comes from eight unknown "black-box" functions that I could only learn 
 | F8 | 8 | 40 | 53 | 9.5985 | 9.9746 |
 
 - Every input value lies between 0 and 1. Outputs are not bounded. There are 279 observations in total.
-- Outputs appear to be exactly repeatable: querying the same point twice returned identical values.
+- Repeated queries of F1, F4 and F5 returned identical values, so those functions look exactly repeatable. The course describes F2's output as noisy, and I never repeated an F2 query, so I could not check it.
 - F1 is unusual: its outputs range from about 1e-245 to 1e-3, so almost every point looks like zero.
 - The data is stored cumulatively in `Data/Week_N/function_M/` as `updated_inputs.npy` and `updated_outputs.npy`. Each week's folder contains everything up to that week.
 - Four rows are repeated queries (one in F1, one in F4, two in F5) from before the duplicate safeguard was added. They have been kept.
 
+**Mini-lesson 12.8: Data and descriptions of functions for Bayesian optimisation competition**
+
+| Function | Input | Output | Optimisation goal | Descriptions of sample applications |
+|---|---|---|---|---|
+| Function 1 | 2D array (10, 2) | 1D array (10,) | Maximise | Finding likely contamination sources in a 2D area, such as a radiation field, where only close proximity gives a non-zero reading. The aim is to find both strong and weak sources. |
+| Function 2 | 2D array (10, 2) | 1D array (10,) | Maximise | A mystery ML model that takes two numbers and returns a noisy log-likelihood score. Depending on the start, the search can get stuck in a local optimum. |
+| Function 3 | 3D array (15, 3) | 1D array (15,) | Maximise | Drug discovery: combining three compounds to make a new medicine. The output is the negated number of adverse reactions, so minimising side effects becomes maximising. |
+| Function 4 | 4D array (30, 4) | 1D array (30,) | Maximise | Placing products across warehouses for a high-sales business, where exact calculations are costly. An ML model with four hyperparameters approximates them, and the landscape has many local optima. |
+| Function 5 | 4D array (20, 4) | 1D array (20,) | Maximise | The yield of a chemical process in a factory, with four inputs. It is typically unimodal, with a single peak where yield is highest. |
+| Function 6 | 5D array (20, 5) | 1D array (20,) | Maximise | A cake recipe with five ingredients, scored on flavour, consistency, calories, waste and cost. Each factor adds penalties, so the score is negative by design and the goal is to get as close to zero as possible. |
+| Function 7 | 6D array (30, 6) | 1D array (30,) | Maximise | Tuning six hyperparameters of an ML model (for example learning rate, regularisation strength or hidden layers) to maximise a performance score such as accuracy or F1. |
+| Function 8 | 8D array (40, 8) | 1D array (40,) | Maximise | An eight-dimensional function, such as tuning an ML model with eight hyperparameters (learning rate, batch size, layers, dropout and others) to maximise validation accuracy between 0 and 1. Finding strong local maxima is a practical aim. |
+
+Source: Mini-lesson 12.8 of the course (descriptions paraphrased). The array sizes are the initial data shapes. My own data is larger, as the table above shows.
+
 See `data_sheet.md` for the full datasheet.
+
+## INPUTS, OUTPUTS AND CHALLENGE OBJECTIVES
+**Inputs.** Each week I submitted one query per function, written as x1-x2-...-xn. Every value has exactly six decimal places and starts with 0, and values are separated by hyphens with no spaces. For example, F2's best query is `0.699500-0.909500` and F3's is `0.401915-0.392969-0.455665`. Functions have between 2 and 8 inputs. The course gives 0.000000 to 0.999999 as the valid range (see the note on the input range in the Results section).
+
+**Outputs.** Each query returns one number for that function, which can be positive or negative and is not bounded. F3 and F6 are negative by design, because they measure side effects or penalties. After each round the course returned my input and its output, plus the cumulative arrays.
+
+**Objective.** Maximise the output of all eight functions. Where the real-world goal is a minimisation, the course negates it so that higher is better.
+
+**Constraints.**
+- One query per function per week, so 13 queries on top of the starting data.
+- The structure of each function is unknown, and only the 2D ones can be visualised.
+- Dimensionality from 2 to 8 calls for different strategies.
+- Results arrive only after each round is processed, so every decision had to be made before seeing the next result.
+- Local optima, negative outputs, and (for F2, according to the course) noise.
+
+**Why it matters for my career.** The project builds skills I expect to use in any ML role: making decisions with scarce data, justifying each choice, and checking a model's confidence against real outcomes. These apply directly to hyperparameter tuning and experiment design, where every evaluation costs time or money.
 
 ## MODEL
 I used **Bayesian optimisation**: fit a model to the points so far, then use it to choose the next point to query.
@@ -39,7 +70,7 @@ I used **Bayesian optimisation**: fit a model to the points so far, then use it 
 - **Gaussian Process (GP)** surrogate (scikit-learn), which predicts the output and how uncertain that prediction is. I chose it because it works well with very few points and gives a usable uncertainty.
 - **Random Forest** surrogate (200 trees), added as a second opinion. Its uncertainty is the spread of the individual trees' predictions. I chose it because it is far less sensitive to extreme output scales and rough landscapes.
 - **Acquisition functions** (UCB and Expected Improvement) turn those predictions into a score for each candidate point, and the highest score is queried next.
-  - **Why UCB and EI together:** UCB (mean plus kappa times the standard deviation) rewards uncertainty, so it explores. EI rewards the expected gain over the current best, so it is more cautious. When they agree I trust the pick more, and when they disagree I choose using the predicted mean and uncertainty. Using both also helped when UCB alone kept proposing points I had already sampled. `[CONFIRM: add the academic paper reference for using UCB and EI]`
+  - **Why UCB and EI together:** UCB (mean plus kappa times the standard deviation) rewards uncertainty, so it explores. EI rewards the expected gain over the current best, so it is more cautious. When they agree I trust the pick more, and when they disagree I choose using the predicted mean and uncertainty. Using both also helped when UCB alone kept proposing points I had already sampled. UCB follows Srinivas et al. (2010) and EI follows Jones, Schonlau and Welch (1998); see [References and technical foundations](References.md) for the full citations.
   - **Why a Gaussian Process first:** it gives both a prediction and an uncertainty, which UCB and EI both need, and it suits the small datasets here (10 to 52 points per function). I did not try neural networks because they need far more data than this and do not give an uncertainty estimate without extra machinery.
 - **Extra safeguards and methods added along the way:**
   - A duplicate-query safeguard, so no point within 0.001 of an earlier one can be chosen. I added it because F1's Week 4 query was an exact repeat of Week 3's, which gave no new information.
@@ -78,7 +109,7 @@ Each decision below comes with the evidence and what it cost. The week is when t
 
 - **GP kernel parameters** (length scale, amplitude, noise) are fitted automatically by maximising the log marginal likelihood, with 10 random restarts. The kernel type and starting length scale were chosen by hand. I assigned the kernels in order of function number: the smoother RBF kernel for the two 2D functions, which are the easiest to model, and Matern kernels for the rest. RBF assumes a very smooth function, while Matern allows a rougher one, and the higher-dimensional functions have sparser data and are less predictable. The starting length scales (0.1 to 0.3) are only starting points, because the fit then optimises them.
 - **kappa and xi** control exploration against exploitation. My overall plan was to explore in the first few weeks and exploit in the later weeks. I started with a rule based on dimension (kappa 1.5 for the 2D functions, 2.0 for F3 to F5, 2.5 for F6 to F8, with xi at 0.01), because higher-dimensional functions have sparser data and need more exploration. Where I lowered kappa, it was to focus on a proposed maximum. The later exploitation came mainly from searching small boxes around each best point (Week 8 onwards), not from changing kappa, because I checked how sensitive the picks were: inside a small box around the best point, raising kappa from 0 to 2 moved most picks by under 0.03 and lowered the predicted value by a few percent, so the box size mattered more than kappa. I set the values by judgement and did not run a search, because each function allows only one real evaluation per week.
-- **White noise (F1 only):** added in Week 5 to keep the fits stable and to allow for noise in the outputs. Almost all of F1's results were close to zero, so I tried adding something new there to stop the fit chasing tiny differences between near-zero values. Repeated queries returned identical outputs, so it is a precaution and not a measured noise level. The other functions' GPs do not include it.
+- **White noise (F1 only):** added in Week 5 to keep the fits stable and to allow for noise in the outputs. Almost all of F1's results were close to zero, so I tried adding something new there to stop the fit chasing tiny differences between near-zero values. Repeated F1 queries returned identical outputs, so it is a precaution and not a measured noise level. The other functions' GPs do not include it.
 - **Random Forest:** 200 trees, fixed random seed (42), other settings left at the scikit-learn defaults. I used more trees than the default of 100 because the uncertainty is the spread across trees, so more trees give a steadier estimate, and it costs little with this little data. I did not tune it.
 - **10,000 random candidates:** a GP prediction is cheap, so 10,000 gives decent coverage in 2 to 3 dimensions. It is coarse in 8 dimensions, which is listed as a limitation in the model card.
 - **Local search box of ±0.04 (Week 7, used for F3 and F4):** I chose those two functions because their best regions already seemed to be found. The size was a first judgement of "close to the best point". It is about a sixth of the typical spacing between my points (about 0.24), so it stays local without reaching other sampled points. I narrowed it to ±0.02 in Week 8 after several functions dropped sharply when they moved away from their best.
@@ -162,6 +193,7 @@ The code in this repository is released under the MIT licence (see `LICENSE`). T
 - `plotting_utils.py`, `surrogate_models.py`: acquisition functions, plotting helpers, the Random Forest and log-space helpers.
 - `make_figures.py`: rebuilds every figure in `results/figures/` from the data (`python make_figures.py`).
 - `Data/`: the weekly data. `results/`: figures and a log of past predictions.
+- `References.md`: the papers and libraries my approach rests on, how each is used, and a list of sources.
 - `LICENSE`: the MIT licence for the code.
 - `CHANGELOG.md`: what changed each week and why. `model_card.md` and `data_sheet.md`: the model card and datasheet.
 - `Retrospective on the BBO capstone project.md`: my reflection on the whole project.

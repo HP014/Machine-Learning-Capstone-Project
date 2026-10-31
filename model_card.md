@@ -66,7 +66,7 @@ The data covers Weeks 6 to 13 and excludes F1, whose predictions are on a differ
 - **Assumptions that do not hold for every function.** The GP assumes a smooth function with a moderate output range. F1 breaks this (outputs from about 1e-245 to 1e-3), and neither the GP nor the Random Forest learned anything useful from it on raw values. The log-space version drops the sign of the output, and F1 does change sign.
 - **Random Forest extrapolation.** In Week 6 the Random Forest predicted values far outside anything observed for F4 (a mean of about -6.7 with a standard deviation of about 8.7, against observed values between -1.3 and 0.4).
 - **Coarse candidate search.** Choosing from 10,000 random points is coarse in 4 to 8 dimensions, and the chosen points for F4, F5 and F8 changed when one extra model fit shifted the random numbers. The picks are better read as good directions than exact optima.
-- **No noise check.** I treated the outputs as exactly repeatable because repeated queries returned identical values, but I have not tested this further.
+- **No noise check.** I treated the outputs as exactly repeatable because repeated queries of F1, F4 and F5 returned identical values. The course describes F2's output as noisy, and I never repeated an F2 query, so I could not check it. For the other functions I have not tested this further.
 - **Local searches cannot find new peaks.** The exploit steps refine around a known best point and could miss a better region elsewhere.
 - **Duplicates.** Four early rows are repeated queries. They were kept and slightly over-weight those points.
 

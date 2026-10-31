@@ -21,7 +21,7 @@
 | F7 | 6 | 30 | 43 |
 | F8 | 8 | 40 | 53 |
 
-- **Is there any missing data?** No. Every query returned an output. Four rows are repeats of an earlier query (one in F1, one in F4, two in F5).
+- **Is there any missing data?** No. Every query returned an output. Four rows are repeats of an earlier query (one in F1, one in F4, two in F5), and each returned the same output as the original, which suggests those functions are noise-free. The course describes F2's output as noisy, and no F2 query was repeated, so I could not check that.
 - **Is there confidential data?** None that I know of. The data is purely numeric, with no personal information.
 
 ## Collection process
