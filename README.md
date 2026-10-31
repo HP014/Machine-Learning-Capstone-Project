@@ -164,7 +164,7 @@ What the results show:
 - Once a good region is found, careful small steps are an efficient way to improve.
 - With only thirteen weeks of data, these are best-so-far results, not proof that any function's true maximum has been found.
 
-For my reflection on the whole project (how the approach changed, why, and what I would do differently), see the [Retrospective on the BBO capstone project](Retrospective%20on%20the%20BBO%20capstone%20project.md). For the strategies that worked, the ones that failed and what I learnt from my peers, see [Successful optimisation strategies](Successful%20optimisation%20strategies.md).
+For my reflection on the whole project (how the approach changed, why, and what I would do differently), see the [Retrospective on the BBO capstone project](Retrospective%20on%20the%20BBO%20capstone%20project.md). For the strategies that worked, the ones that failed and what I learnt from my peers, see [Successful optimisation strategies](Successful%20optimisation%20strategies.md). A short version of the whole project is in my [presentation](Presentation.md) ([PDF](BBO%20capstone%20project%20presentation%20-%20Hilton.pdf)).
 
 ## CHALLENGES AND KEY INSIGHTS
 **Challenges**
@@ -220,6 +220,7 @@ Then, from the repository root:
 - `References.md`: the papers and libraries my approach rests on, how each is used, and a list of sources.
 - `Retrospective on the BBO capstone project.md`: my reflection on the whole project.
 - `Successful optimisation strategies.md`: my reflection on which strategies worked, why, and what I learnt from my peers.
+- `BBO capstone project presentation - Hilton.pdf`: my presentation, written into the course template. `Presentation.md` has the same text in a readable form.
 - `LICENSE`: the MIT licence for the code.
 
 ## LICENCE
