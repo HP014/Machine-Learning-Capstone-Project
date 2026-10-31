@@ -151,6 +151,9 @@ For my reflection on the whole project (how the approach changed, why, and what 
 
 The two write-ups, [Retrospective on the BBO capstone project](Retrospective%20on%20the%20BBO%20capstone%20project.md) and [Successful optimisation strategies](Successful%20optimisation%20strategies.md), give the full story.
 
+## LICENCE
+The code in this repository is released under the MIT licence (see `LICENSE`). The initial data points were supplied by the course and remain the course's material, so the licence does not cover them.
+
 ## (OPTIONAL: CONTACT DETAILS)
 `[Add a link or email here if you make the repository public, or delete this section.]`
 
@@ -159,6 +162,7 @@ The two write-ups, [Retrospective on the BBO capstone project](Retrospective%20o
 - `plotting_utils.py`, `surrogate_models.py`: acquisition functions, plotting helpers, the Random Forest and log-space helpers.
 - `make_figures.py`: rebuilds every figure in `results/figures/` from the data (`python make_figures.py`).
 - `Data/`: the weekly data. `results/`: figures and a log of past predictions.
+- `LICENSE`: the MIT licence for the code.
 - `CHANGELOG.md`: what changed each week and why. `model_card.md` and `data_sheet.md`: the model card and datasheet.
 - `Retrospective on the BBO capstone project.md`: my reflection on the whole project.
 - `Successful optimisation strategies.md`: my reflection on which strategies worked, why, and what I learnt from my peers.

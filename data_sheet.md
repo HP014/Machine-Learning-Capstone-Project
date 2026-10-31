@@ -44,7 +44,7 @@
 ## Distribution
 
 - **How has the dataset already been distributed?** It is stored in this repository, which is public. The course's initial points are included with attribution to the course, and they remain the course's material. The rest is my own queries and the outputs returned for them.
-- **Is it subject to any copyright, licence or terms of use?** The course material states no licence or terms of use for the data. The initial points remain the course's, and the data is shared here for educational, non-commercial purposes as part of a course portfolio. A licence for my own queries, code and documents is still to be added to the repository.
+- **Is it subject to any copyright, licence or terms of use?** The course material states no licence or terms of use for the data. The initial points remain the course's, and the data is shared here for educational, non-commercial purposes as part of a course portfolio. My code is released under the MIT licence (see `LICENSE`), which does not cover the course's initial points.
 
 ## Maintenance
 
